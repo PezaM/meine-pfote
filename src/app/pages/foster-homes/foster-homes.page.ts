@@ -55,9 +55,12 @@ export class FosterHomesPage {
   private readonly roleService = inject(RoleService);
 
   readonly role = this.roleService.getCurrentRole();
-  readonly isCreate = this.route.snapshot.data['create'] === true;
+  readonly view =
+    this.route.snapshot.data['view'] ??
+    (this.route.snapshot.paramMap.has('id') ? 'detail' : this.role === 'foster' ? 'profile' : 'list');
+  readonly isCreate = this.view === 'create';
+  readonly isList = this.view === 'list';
   readonly homeId = this.route.snapshot.paramMap.get('id') ?? this.authFosterHomeId();
-  readonly isList = !this.isCreate && this.role !== 'foster' && !this.route.snapshot.paramMap.has('id');
   home = this.isCreate || !this.homeId ? null : this.fosterHomeService.getFosterHomeForCurrentUser(this.homeId);
   statusMessage = '';
   private readonly currencyFormatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
@@ -96,6 +99,10 @@ export class FosterHomesPage {
 
   get canEdit(): boolean {
     return this.role === 'board' || this.role === 'foster';
+  }
+
+  get isProfile(): boolean {
+    return this.view === 'profile' || this.view === 'detail';
   }
 
   saveHome(): void {

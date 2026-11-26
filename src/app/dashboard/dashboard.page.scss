@@ -30,7 +30,8 @@
 
   > ion-button {
     flex-shrink: 0;
-    --background: #377c5b;
+    --background: #1f5f43;
+    --color: #fff;
     --border-radius: 12px;
     --box-shadow: none;
     min-height: 44px;
@@ -39,7 +40,7 @@
 
 .eyebrow {
   margin: 0 0 9px;
-  color: #377c5b;
+  color: #1f5f43;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -106,12 +107,12 @@
 
 .metric-green .metric-icon {
   background: #e8f3eb;
-  color: #377c5b;
+  color: #1f5f43;
 }
 
 .metric-amber .metric-icon {
   background: #fff2d9;
-  color: #a56a00;
+  color: #765000;
 }
 
 .metric-coral .metric-icon {
@@ -121,12 +122,12 @@
 
 .metric-blue .metric-icon {
   background: #e7f1fb;
-  color: #3475ae;
+  color: #255b88;
 }
 
 .metric-violet .metric-icon {
   background: #f0eafa;
-  color: #7553a6;
+  color: #62428f;
 }
 
 .dashboard-columns {
@@ -159,7 +160,7 @@ ion-card-title {
 
   ion-icon {
     flex-shrink: 0;
-    color: #377c5b;
+    color: #1f5f43;
     font-size: 19px;
   }
 }
@@ -182,7 +183,7 @@ ion-item {
 
   p {
     margin-top: 4px;
-    color: #78857c;
+    color: #526057;
     font-size: 12px;
     line-height: 1.45;
   }
@@ -206,7 +207,7 @@ ion-item {
   align-content: start;
 
   strong {
-    color: #377c5b;
+    color: #1f5f43;
     font-size: 28px;
   }
 
@@ -217,13 +218,13 @@ ion-item {
   }
 
   small {
-    color: #78857c;
+    color: #526057;
     font-size: 11px;
   }
 }
 
 .animal-meta {
-  color: #78857c;
+  color: #526057;
   font-size: 12px;
   font-weight: 400;
 }
@@ -246,18 +247,18 @@ ion-item {
     ion-icon {
       flex: 0 0 auto;
       margin-top: 1px;
-      color: #71867a;
+      color: #526057;
       font-size: 14px;
     }
   }
 
   .trip-time {
-    color: #377c5b;
+    color: #1f5f43;
     font-weight: 600;
   }
 
   .transport-note {
-    color: #8b671d;
+    color: #765000;
   }
 }
 

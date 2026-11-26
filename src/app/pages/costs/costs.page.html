@@ -1,0 +1,200 @@
+<ion-content class="cost-content">
+  <main class="cost-page">
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · FINANZEN</p>
+        <h1>{{ title() }}</h1>
+        <p class="page-intro">
+          @if (isReceiptView()) { Belege und ihre Zuordnung zu Kosten, Tieren und Pflegestellen. } @else if (role ===
+          'foster') { Erfasse und prüfe ausschließlich Kosten deiner Pflegestelle. } @else { Erfasse, prüfe und verwalte
+          die Vereinskosten. }
+        </p>
+      </div>
+      @if (isReceiptView()) {
+      <ion-button fill="outline" routerLink="/home/costs">Zur Kostenübersicht</ion-button>
+      } @else {
+      <ion-button fill="outline" routerLink="/home/receipts">Belegübersicht</ion-button>
+      }
+    </header>
+
+    @if (isReceiptView()) {
+    <section aria-label="Belegliste">
+      @if (receipts.length) {
+      <div class="entry-grid">
+        @for (receipt of receipts; track receipt.id) {
+        <ion-card class="entry-card">
+          <ion-card-header>
+            <div class="entry-heading">
+              <ion-card-title>{{ receipt.receiptName }}</ion-card-title>
+              <ion-badge [color]="receipt.receiptAssigned ? 'success' : 'warning'">
+                {{ receipt.receiptAssigned ? 'Zugeordnet' : 'Nicht zugeordnet' }}
+              </ion-badge>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <p><strong>Datum:</strong> {{ formatDate(receipt.date) }}</p>
+            <p><strong>Betrag:</strong> {{ formatCurrency(receipt.amount) }}</p>
+            <p><strong>Kategorie:</strong> {{ receipt.category }}</p>
+            <p><strong>Tier:</strong> {{ animalName(receipt.animalId) }}</p>
+            <p><strong>Pflegestelle:</strong> {{ fosterHomeName(receipt.fosterHomeId) }}</p>
+            @if (canAssignReceipts) {
+            <ion-button fill="outline" size="small" (click)="toggleReceiptAssignment(receipt)">
+              {{ receipt.receiptAssigned ? 'Zuordnung aufheben' : 'Beleg zuordnen' }}
+            </ion-button>
+            }
+          </ion-card-content>
+        </ion-card>
+        }
+      </div>
+      } @else {
+      <ion-card><ion-card-content>Für deine Ansicht sind noch keine Belege vorhanden.</ion-card-content></ion-card>
+      }
+    </section>
+    } @else { @if (canCreate) {
+    <ion-card class="form-card">
+      <ion-card-header>
+        <ion-card-title>{{ editingCostId ? 'Kosten bearbeiten' : 'Kosten erfassen' }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="costForm" (ngSubmit)="submitCost()">
+          <div class="form-grid">
+            <ion-item>
+              <ion-input
+                label="Betrag in Euro"
+                labelPlacement="stacked"
+                type="number"
+                min="0.01"
+                step="0.01"
+                formControlName="amount"
+                required
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input label="Datum" labelPlacement="stacked" type="date" formControlName="date" required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-select label="Kategorie" labelPlacement="stacked" formControlName="category" interface="popover">
+                @for (category of categories; track category) {
+                <ion-select-option [value]="category">{{ category }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-select
+                label="Zugehöriges Tier"
+                labelPlacement="stacked"
+                formControlName="animalId"
+                (ionChange)="selectAnimal()"
+                interface="popover"
+              >
+                <ion-select-option value="">Kein Tier zugeordnet</ion-select-option>
+                @for (animal of animals; track animal.id) {
+                <ion-select-option [value]="animal.id">{{ animal.name }} · {{ animal.species }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            @if (role === 'foster') {
+            <ion-item>
+              <ion-input
+                label="Zugehörige Pflegestelle"
+                labelPlacement="stacked"
+                [value]="fosterHomeName(fosterHomeFieldValue)"
+                readonly
+              ></ion-input>
+            </ion-item>
+            } @else {
+            <ion-item>
+              <ion-select label="Zugehörige Pflegestelle" labelPlacement="stacked" formControlName="fosterHomeId">
+                <ion-select-option value="">Keine Pflegestelle zugeordnet</ion-select-option>
+                @for (home of fosterHomes; track home.id) {
+                <ion-select-option [value]="home.id">{{ home.name }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            }
+            <ion-item class="description-field">
+              <ion-textarea
+                label="Beschreibung"
+                labelPlacement="stacked"
+                formControlName="description"
+                rows="2"
+                required
+              ></ion-textarea>
+            </ion-item>
+          </div>
+
+          <label class="file-upload">
+            <span>Beleg hinzufügen (PDF oder Bild)</span>
+            <input type="file" accept="application/pdf,image/*" (change)="selectReceipt($event)" />
+          </label>
+          @if (costForm.controls.receiptName.value) {
+          <p class="selected-file">Ausgewählt: {{ costForm.controls.receiptName.value }}</p>
+          }
+
+          <div class="form-actions">
+            <ion-button type="submit" [disabled]="costForm.invalid">
+              {{ editingCostId ? 'Änderungen speichern' : 'Kosten erfassen' }}
+            </ion-button>
+            @if (editingCostId) {
+            <ion-button type="button" fill="outline" (click)="cancelEdit()">Abbrechen</ion-button>
+            }
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    }
+
+    <section class="cost-list-section" aria-label="Kostenübersicht">
+      <div class="list-heading">
+        <h2>{{ role === 'foster' ? 'Kosten meiner Pflegestelle' : 'Alle Kosten' }}</h2>
+        <span>{{ costs.length }} Einträge</span>
+      </div>
+      @if (costs.length) {
+      <div class="entry-grid">
+        @for (cost of costs; track cost.id) {
+        <ion-card class="entry-card">
+          <ion-card-header>
+            <div class="entry-heading">
+              <ion-card-title>{{ cost.description }}</ion-card-title>
+              <ion-badge [color]="costStatusColor(cost.status)">{{ cost.status }}</ion-badge>
+            </div>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="amount">{{ formatCurrency(cost.amount) }}</p>
+            <p><strong>Datum:</strong> {{ formatDate(cost.date) }}</p>
+            <p><strong>Kategorie:</strong> {{ cost.category }}</p>
+            <p><strong>Tier:</strong> {{ animalName(cost.animalId) }}</p>
+            <p><strong>Pflegestelle:</strong> {{ fosterHomeName(cost.fosterHomeId) }}</p>
+            <p>
+              <strong>Beleg:</strong>
+              {{ cost.receiptName ?? 'Kein Beleg hinterlegt' }} @if (cost.receiptName) {
+              <ion-badge [color]="cost.receiptAssigned ? 'success' : 'warning'">
+                {{ cost.receiptAssigned ? 'Zugeordnet' : 'Nicht zugeordnet' }}
+              </ion-badge>
+              }
+            </p>
+            @if (canManageCosts || (canApproveCosts && cost.status === 'Offen')) {
+            <div class="entry-actions">
+              @if (canManageCosts) {
+              <ion-button fill="outline" size="small" (click)="editCost(cost)">Bearbeiten</ion-button>
+              } @if (canApproveCosts && cost.status === 'Offen') {
+              <ion-button size="small" (click)="updateStatus(cost.id, 'Freigegeben')">Freigeben</ion-button>
+              <ion-button fill="outline" color="danger" size="small" (click)="updateStatus(cost.id, 'Abgelehnt')">
+                Ablehnen
+              </ion-button>
+              }
+            </div>
+            }
+          </ion-card-content>
+        </ion-card>
+        }
+      </div>
+      } @else {
+      <ion-card><ion-card-content>Es wurden noch keine Kosten erfasst.</ion-card-content></ion-card>
+      }
+    </section>
+    } @if (statusMessage) {
+    <ion-note class="status-message" role="status">{{ statusMessage }}</ion-note>
+    }
+  </main>
+</ion-content>

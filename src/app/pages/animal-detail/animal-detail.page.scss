@@ -11,7 +11,7 @@
 .back-link {
   display: inline-block;
   margin-bottom: 18px;
-  color: #377c5b;
+  color: #1f5f43;
   font-weight: 600;
   text-decoration: none;
 }
@@ -66,14 +66,15 @@ ion-item {
 
 form ion-button {
   margin-top: 16px;
-  --background: #377c5b;
+  --background: #1f5f43;
+  --color: #fff;
 }
 
 .photo-upload {
   display: grid;
   gap: 8px;
   margin: 12px 4px;
-  color: #377c5b;
+  color: #1f5f43;
   font-weight: 600;
 
   input {

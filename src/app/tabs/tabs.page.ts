@@ -57,7 +57,7 @@ const ROLE_NAVIGATION: Record<UserRole, readonly NavigationItem[]> = {
       icon: 'notifications-outline',
       area: 'notifications',
     },
-    { label: 'Profil', path: 'foster-homes', icon: 'person-outline', area: 'foster-homes' },
+    { label: 'Profil', path: 'my-foster-home', icon: 'person-outline', area: 'foster-homes' },
   ],
   treasurer: [
     { label: 'Dashboard', path: 'dashboard', icon: 'home-outline', area: 'dashboard' },

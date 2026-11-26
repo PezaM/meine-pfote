@@ -25,7 +25,7 @@ const AREAS: readonly PermissionArea[] = [
 
 const EXPECTED_ACCESS: Record<UserRole, readonly PermissionArea[]> = {
   board: AREAS,
-  foster: ['dashboard', 'animals', 'animal-details', 'foster-homes', 'costs', 'notifications', 'profile'],
+  foster: ['dashboard', 'animals', 'animal-details', 'foster-homes', 'costs', 'receipts', 'notifications', 'profile'],
   treasurer: ['dashboard', 'animals', 'animal-details', 'foster-homes', 'costs', 'receipts', 'reports', 'profile'],
   driver: ['dashboard', 'animal-details', 'notifications', 'driver-assignments', 'profile'],
 };
@@ -71,6 +71,8 @@ describe('PermissionService', () => {
     expect(permissionService.canAccessOwnedResource('animals', 'user-foster')).toBe(true);
     expect(permissionService.canAccessOwnedResource('animal-details', 'user-board')).toBe(false);
     expect(permissionService.canAccessOwnedResource('costs', 'user-foster')).toBe(true);
+    expect(permissionService.canAccessOwnedResource('receipts', 'user-foster')).toBe(true);
+    expect(permissionService.canAccessOwnedResource('receipts', 'user-board')).toBe(false);
     expect(permissionService.canAccessOwnedResource('profile', 'user-board')).toBe(false);
     expect(permissionService.canAccessOwnedResource('notifications', 'user-foster')).toBe(true);
     expect(permissionService.canAccessOwnedResource('notifications', 'user-driver')).toBe(false);

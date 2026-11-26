@@ -23,7 +23,7 @@ const AREA_PERMISSIONS: Record<PermissionArea, readonly UserRole[]> = {
   'animal-details': ['board', 'foster', 'treasurer', 'driver'],
   'foster-homes': ['board', 'foster', 'treasurer'],
   costs: ['board', 'foster', 'treasurer'],
-  receipts: ['board', 'treasurer'],
+  receipts: ['board', 'foster', 'treasurer'],
   reports: ['board', 'treasurer'],
   notifications: ['board', 'foster', 'driver'],
   'driver-assignments': ['board', 'driver'],
@@ -60,7 +60,11 @@ export class PermissionService {
 
     if (
       area === 'profile' ||
-      ((area === 'animals' || area === 'animal-details' || area === 'costs' || area === 'notifications') &&
+      ((area === 'animals' ||
+        area === 'animal-details' ||
+        area === 'costs' ||
+        area === 'receipts' ||
+        area === 'notifications') &&
         user.role === 'foster') ||
       ((area === 'driver-assignments' || area === 'notifications') && user.role === 'driver')
     ) {

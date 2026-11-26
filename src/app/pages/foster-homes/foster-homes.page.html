@@ -1,4 +1,4 @@
-<ion-content class="foster-content">
+<ion-content class="foster-content" [fullscreen]="true">
   <main class="foster-page">
     @if (isList) {
     <header class="page-heading">
@@ -71,8 +71,9 @@
         </form>
       </ion-card-content>
     </ion-card>
-    } @else if (home) {
+    } @else if (isProfile && home) { @if (role !== 'foster') {
     <a class="back-link" routerLink="/home/foster-homes">← Zurück zu den Pflegestellen</a>
+    }
     <header class="detail-heading">
       <div>
         <p class="eyebrow">{{ role === 'foster' ? 'MEIN PROFIL' : 'PFLEGESTELLENPROFIL' }}</p>

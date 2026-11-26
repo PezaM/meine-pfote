@@ -9,11 +9,11 @@ import { FosterHomesPage } from './foster-homes.page';
 describe('FosterHomesPage role-specific views', () => {
   let authService: AuthService;
   let routeId: string | null;
-  let createRoute: boolean;
+  let routeView: string;
 
   beforeEach(() => {
     routeId = null;
-    createRoute = false;
+    routeView = 'list';
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -21,7 +21,7 @@ describe('FosterHomesPage role-specific views', () => {
           provide: ActivatedRoute,
           useFactory: () => ({
             snapshot: {
-              data: { create: createRoute },
+              data: { view: routeView },
               paramMap: convertToParamMap(routeId ? { id: routeId } : {}),
             },
           }),
@@ -33,6 +33,9 @@ describe('FosterHomesPage role-specific views', () => {
 
   function render(username: string, password: string): ComponentFixture<FosterHomesPage> {
     expect(authService.login(username, password)).not.toBeNull();
+    if (username === 'pflegestelle') {
+      routeView = 'profile';
+    }
     return TestBed.createComponent(FosterHomesPage);
   }
 
