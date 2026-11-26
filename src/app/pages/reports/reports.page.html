@@ -1,0 +1,64 @@
+<ion-content class="reports-content">
+  <main class="reports-page">
+    <header class="page-heading">
+      <p class="eyebrow">MEINE PFOTE · AUSWERTUNGEN</p>
+      <h1>Berichte</h1>
+      <p>Finanz- und Vereinsübersicht für {{ month }}.</p>
+    </header>
+
+    <section class="summary-grid" aria-label="Monatskennzahlen">
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <span class="summary-label">Monatliche Gesamtausgaben</span>
+          <strong>{{ formatCurrency(totalMonthlyExpenses) }}</strong>
+          <span class="summary-period">{{ month }}</span>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <span class="summary-label">Aufgenommene Tiere</span>
+          <strong>{{ admittedAnimalCount }}</strong>
+          <span class="summary-period">Vereinsweiter Bestand</span>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <section class="report-grid" aria-label="Kostenaufstellungen">
+      <ion-card class="report-card">
+        <ion-card-header><ion-card-title>Kosten nach Kategorien</ion-card-title></ion-card-header>
+        <ion-list lines="full">
+          @for (row of categories; track row.label) {
+          <ion-item>
+            <ion-label>{{ row.label }}</ion-label>
+            <strong slot="end">{{ formatCurrency(row.amount) }}</strong>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+
+      <ion-card class="report-card">
+        <ion-card-header><ion-card-title>Kosten nach Tieren</ion-card-title></ion-card-header>
+        <ion-list lines="full">
+          @for (row of animals; track row.label) {
+          <ion-item>
+            <ion-label>{{ row.label }}</ion-label>
+            <strong slot="end">{{ formatCurrency(row.amount) }}</strong>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+
+      <ion-card class="report-card">
+        <ion-card-header><ion-card-title>Kosten nach Pflegestellen</ion-card-title></ion-card-header>
+        <ion-list lines="full">
+          @for (row of fosterHomes; track row.label) {
+          <ion-item>
+            <ion-label>{{ row.label }}</ion-label>
+            <strong slot="end">{{ formatCurrency(row.amount) }}</strong>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+    </section>
+  </main>
+</ion-content>

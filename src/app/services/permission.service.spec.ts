@@ -26,7 +26,17 @@ const AREAS: readonly PermissionArea[] = [
 const EXPECTED_ACCESS: Record<UserRole, readonly PermissionArea[]> = {
   board: AREAS,
   foster: ['dashboard', 'animals', 'animal-details', 'foster-homes', 'costs', 'receipts', 'notifications', 'profile'],
-  treasurer: ['dashboard', 'animals', 'animal-details', 'foster-homes', 'costs', 'receipts', 'reports', 'profile'],
+  treasurer: [
+    'dashboard',
+    'animals',
+    'animal-details',
+    'foster-homes',
+    'costs',
+    'receipts',
+    'reports',
+    'notifications',
+    'profile',
+  ],
   driver: ['dashboard', 'animal-details', 'notifications', 'driver-assignments', 'profile'],
 };
 
@@ -81,6 +91,11 @@ describe('PermissionService', () => {
     expect(permissionService.canAccessOwnedResource('driver-assignments', 'user-driver')).toBe(true);
     expect(permissionService.canAccessOwnedResource('driver-assignments', 'user-foster')).toBe(false);
     expect(permissionService.canAccessOwnedResource('notifications', 'user-driver')).toBe(true);
+    expect(permissionService.canAccessOwnedResource('notifications', 'user-foster')).toBe(false);
+
+    authService.login('kassierer', 'kassierer');
+    expect(permissionService.canAccessOwnedResource('notifications', 'user-treasurer')).toBe(true);
+    expect(permissionService.canAccessOwnedResource('notifications', 'user-driver')).toBe(false);
 
     authService.login('vorstand', 'vorstand');
     expect(permissionService.canAccessOwnedResource('animals', 'user-foster')).toBe(true);

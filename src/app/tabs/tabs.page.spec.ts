@@ -20,7 +20,7 @@ describe('TabsPage', () => {
       ['vorstand', 'vorstand', 'board', ['Dashboard', 'Tiere', 'Pflegestellen', 'Kosten', 'Mehr']],
       ['pflegestelle', 'pflegestelle', 'foster', ['Dashboard', 'Meine Tiere', 'Benachrichtigungen', 'Profil']],
       ['kassierer', 'kassierer', 'treasurer', ['Dashboard', 'Kosten', 'Belege', 'Berichte', 'Pflegestellen']],
-      ['fahrer', 'fahrer', 'driver', ['Dashboard', 'Meine Einsätze', 'Profil']],
+      ['fahrer', 'fahrer', 'driver', ['Dashboard', 'Meine Einsätze', 'Benachrichtigungen', 'Profil']],
     ];
 
     for (const [username, password, role, expectedTabs] of accounts) {
@@ -28,6 +28,16 @@ describe('TabsPage', () => {
 
       const fixture = TestBed.createComponent(TabsPage);
       expect(fixture.componentInstance.navigation.map((item) => item.label)).toEqual(expectedTabs);
+      if (role === 'foster') {
+        expect(fixture.componentInstance.navigation.find((item) => item.label === 'Profil')?.path).toBe('profile');
+      }
+      if (role === 'driver') {
+        expect(fixture.componentInstance.navigation.find((item) => item.label === 'Benachrichtigungen')).toMatchObject({
+          path: 'notifications',
+          icon: 'notifications-outline',
+        });
+        expect(fixture.componentInstance.unreadNotificationCount).toBe(1);
+      }
       fixture.destroy();
     }
   });

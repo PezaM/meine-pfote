@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { animalDetailGuard } from './guards/animal-detail.guard';
 import { driverAssignmentGuard } from './guards/driver-assignment.guard';
 import { fosterHomeGuard } from './guards/foster-home.guard';
+import { notificationGuard } from './guards/notification.guard';
 import { permissionGuard } from './guards/permission.guard';
 import { roleGuard } from './guards/role.guard';
 import { AuthService } from './services/auth.service';
@@ -101,14 +102,17 @@ export const routes: Routes = [
       {
         path: 'reports',
         canActivate: [permissionGuard('reports')],
-        data: { area: 'reports', title: 'Berichte' },
-        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+        loadComponent: () => import('./pages/reports/reports.page').then((m) => m.ReportsPage),
       },
       {
         path: 'notifications',
         canActivate: [permissionGuard('notifications')],
-        data: { area: 'notifications', title: 'Benachrichtigungen' },
-        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+        loadComponent: () => import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage),
+      },
+      {
+        path: 'notifications/:id',
+        canActivate: [notificationGuard],
+        loadComponent: () => import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage),
       },
       {
         path: 'driver-assignments',
@@ -127,8 +131,7 @@ export const routes: Routes = [
       {
         path: 'profile',
         canActivate: [permissionGuard('profile')],
-        data: { area: 'profile', title: 'Profil' },
-        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+        loadComponent: () => import('./pages/profile/profile.page').then((m) => m.ProfilePage),
       },
       {
         path: 'more',

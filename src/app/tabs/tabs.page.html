@@ -11,7 +11,7 @@
     </ion-toolbar>
   </ion-header>
 
-    <ion-router-outlet></ion-router-outlet>
+  <ion-router-outlet></ion-router-outlet>
 
   <ion-tab-bar slot="bottom">
     @for (item of navigation; track item.path) {
@@ -23,6 +23,9 @@
     >
       <ion-icon [name]="item.icon"></ion-icon>
       <ion-label>{{ item.label }}</ion-label>
+      @if (item.path === 'notifications' && unreadNotificationCount > 0) {
+      <ion-badge color="danger">{{ unreadNotificationCount }}</ion-badge>
+      }
     </ion-tab-button>
     }
   </ion-tab-bar>

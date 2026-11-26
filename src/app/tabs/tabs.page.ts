@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
+  IonBadge,
   IonButton,
   IonButtons,
   IonHeader,
@@ -29,6 +30,7 @@ import {
 import type { UserRole } from '../models/user';
 import { USER_ROLE_LABELS } from '../models/user';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../services/notification.service';
 import type { PermissionArea } from '../services/permission.service';
 import { PermissionService } from '../services/permission.service';
 import { RoleService } from '../services/role.service';
@@ -57,7 +59,7 @@ const ROLE_NAVIGATION: Record<UserRole, readonly NavigationItem[]> = {
       icon: 'notifications-outline',
       area: 'notifications',
     },
-    { label: 'Profil', path: 'my-foster-home', icon: 'person-outline', area: 'foster-homes' },
+    { label: 'Profil', path: 'profile', icon: 'person-outline', area: 'profile' },
   ],
   treasurer: [
     { label: 'Dashboard', path: 'dashboard', icon: 'home-outline', area: 'dashboard' },
@@ -74,6 +76,12 @@ const ROLE_NAVIGATION: Record<UserRole, readonly NavigationItem[]> = {
       icon: 'car-outline',
       area: 'driver-assignments',
     },
+    {
+      label: 'Benachrichtigungen',
+      path: 'notifications',
+      icon: 'notifications-outline',
+      area: 'notifications',
+    },
     { label: 'Profil', path: 'profile', icon: 'person-outline', area: 'profile' },
   ],
 };
@@ -84,6 +92,7 @@ const ROLE_NAVIGATION: Record<UserRole, readonly NavigationItem[]> = {
   styleUrls: ['./tabs.page.scss'],
   imports: [
     IonButton,
+    IonBadge,
     IonButtons,
     IonHeader,
     IonIcon,
@@ -101,10 +110,15 @@ export class TabsPage {
   private readonly authService = inject(AuthService);
   private readonly roleService = inject(RoleService);
   private readonly permissionService = inject(PermissionService);
+  private readonly notificationService = inject(NotificationService);
 
   readonly currentUser = this.authService.getCurrentUser();
   readonly roleLabel = this.currentUser ? USER_ROLE_LABELS[this.currentUser.role] : '';
   readonly navigation = this.getNavigation();
+
+  get unreadNotificationCount(): number {
+    return this.notificationService.getUnreadCountForCurrentUser();
+  }
 
   constructor() {
     addIcons({

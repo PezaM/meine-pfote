@@ -1,0 +1,80 @@
+<ion-content class="notifications-content">
+  <main class="notifications-page">
+    @if (notificationId) {
+    <ion-button class="back-button" fill="clear" routerLink="/home/notifications">
+      <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+      Zurück zu den Benachrichtigungen
+    </ion-button>
+
+    @if (notification; as currentNotification) {
+    <ion-card class="notification-card notification-detail" [class.unread]="!currentNotification.read">
+      <ion-card-header>
+        <div class="card-heading">
+          <div class="category-label">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <span>{{ currentNotification.category }}</span>
+          </div>
+          <ion-badge [color]="currentNotification.read ? 'medium' : 'primary'">
+            {{ currentNotification.read ? 'Gelesen' : 'Ungelesen' }}
+          </ion-badge>
+        </div>
+        <ion-card-title>{{ currentNotification.title }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="notification-date">{{ formatDate(currentNotification.date) }}</p>
+        <p class="notification-description">{{ currentNotification.description }}</p>
+        @if (!currentNotification.read) {
+        <ion-button class="action-button" expand="block" size="large" (click)="markAsRead(currentNotification)">
+          <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+          Als gelesen markieren
+        </ion-button>
+        }
+      </ion-card-content>
+    </ion-card>
+    } @else {
+    <ion-card><ion-card-content>Diese Benachrichtigung ist nicht verfügbar.</ion-card-content></ion-card>
+    } } @else {
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · MITTEILUNGEN</p>
+        <h1>Benachrichtigungen</h1>
+      </div>
+      <ion-badge color="primary">{{ unreadCount }} ungelesen</ion-badge>
+    </header>
+
+    @if (notifications.length) {
+    <section class="notification-list" aria-label="Benachrichtigungsliste">
+      @for (item of notifications; track item.id) {
+      <ion-card class="notification-card" [class.unread]="!item.read">
+        <ion-card-header>
+          <div class="card-heading">
+            <div class="category-label">
+              <ion-icon name="notifications-outline"></ion-icon>
+              <span>{{ item.category }}</span>
+            </div>
+            <ion-badge [color]="item.read ? 'medium' : categoryColor(item.category)">
+              {{ item.read ? 'Gelesen' : 'Ungelesen' }}
+            </ion-badge>
+          </div>
+          <ion-card-title>{{ item.title }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="notification-date">{{ formatDate(item.date) }}</p>
+          <p class="notification-description">{{ item.description }}</p>
+          <div class="notification-actions">
+            <ion-button fill="outline" [routerLink]="['/home/notifications', item.id]"> Öffnen </ion-button>
+            @if (!item.read) {
+            <ion-button class="action-button" (click)="markAsRead(item)">Als gelesen markieren</ion-button>
+            }
+          </div>
+        </ion-card-content>
+      </ion-card>
+      }
+    </section>
+    } @else {
+    <ion-card><ion-card-content>Du hast derzeit keine Benachrichtigungen.</ion-card-content></ion-card>
+    } } @if (statusMessage) {
+    <ion-note class="status-message" role="status">{{ statusMessage }}</ion-note>
+    }
+  </main>
+</ion-content>

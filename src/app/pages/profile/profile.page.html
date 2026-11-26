@@ -1,0 +1,56 @@
+<ion-content class="profile-content">
+  <main class="profile-page">
+    <p class="eyebrow">MEINE PFOTE · KONTO</p>
+    <h1>Mein Profil</h1>
+
+    @if (user) {
+    <ion-card class="profile-card">
+      <ion-card-header><ion-card-title>Persönliche Angaben</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <dl class="profile-fields">
+          <div>
+            <dt>Vorname</dt>
+            <dd>{{ user.firstName }}</dd>
+          </div>
+          <div>
+            <dt>Nachname</dt>
+            <dd>{{ user.lastName }}</dd>
+          </div>
+          <div>
+            <dt>Benutzername</dt>
+            <dd>{{ user.username }}</dd>
+          </div>
+          <div>
+            <dt>E-Mail</dt>
+            <dd>{{ user.email }}</dd>
+          </div>
+          <div>
+            <dt>Rolle</dt>
+            <dd>{{ roleLabel }}</dd>
+          </div>
+          @if (fosterHomeName) {
+          <div>
+            <dt>Zugehörige Pflegestelle</dt>
+            <dd>{{ fosterHomeName }}</dd>
+          </div>
+          }
+        </dl>
+      </ion-card-content>
+    </ion-card>
+
+    @if (user.role === 'foster' && user.fosterHomeId) {
+    <ion-button class="secondary-button" expand="block" fill="outline" routerLink="/home/my-foster-home">
+      <ion-icon slot="start" name="people-outline"></ion-icon>
+      Pflegestellen-Kontaktdaten bearbeiten
+    </ion-button>
+    }
+
+    <ion-button class="logout-button" expand="block" size="large" (click)="logout()">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      Abmelden
+    </ion-button>
+    } @else {
+    <ion-card><ion-card-content>Dein Profil ist derzeit nicht verfügbar.</ion-card-content></ion-card>
+    }
+  </main>
+</ion-content>
