@@ -1,7 +1,21 @@
 <ion-tabs>
   <ion-header slot="top" class="app-header">
     <ion-toolbar class="app-toolbar">
-      <ion-label class="app-name">Meine Pfote</ion-label>
+      <div class="app-logo" slot="start" role="img" aria-label="Meine Pfote">
+        <ion-icon name="paw-outline" aria-hidden="true"></ion-icon>
+      </div>
+      <div
+        class="connection-status"
+        [class.online]="isOnline()"
+        [class.offline]="!isOnline()"
+        role="status"
+        aria-live="polite"
+        [attr.aria-label]="isOnline() ? 'Online' : 'Offline'"
+        [title]="isOnline() ? 'Online' : 'Offline'"
+      >
+        <ion-icon [name]="isOnline() ? 'wifi-outline' : 'cloud-offline-outline'" aria-hidden="true"></ion-icon>
+        <span>{{ isOnline() ? 'Online' : 'Offline' }}</span>
+      </div>
       <ion-buttons slot="end">
         @if (currentUser) {
         <span class="current-user">{{ currentUser.firstName }} · {{ roleLabel }}</span>

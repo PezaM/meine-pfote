@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   IonBadge,
@@ -25,6 +25,8 @@ import {
   pawOutline,
   personOutline,
   receiptOutline,
+  wifiOutline,
+  cloudOfflineOutline,
 } from 'ionicons/icons';
 
 import type { UserRole } from '../models/user';
@@ -107,6 +109,7 @@ const ROLE_NAVIGATION: Record<UserRole, readonly NavigationItem[]> = {
   ],
 })
 export class TabsPage {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
   private readonly roleService = inject(RoleService);
   private readonly permissionService = inject(PermissionService);
@@ -115,15 +118,29 @@ export class TabsPage {
   readonly currentUser = this.authService.getCurrentUser();
   readonly roleLabel = this.currentUser ? USER_ROLE_LABELS[this.currentUser.role] : '';
   readonly navigation = this.getNavigation();
+  readonly isOnline = signal(typeof navigator !== 'undefined' && navigator.onLine);
 
   get unreadNotificationCount(): number {
     return this.notificationService.getUnreadCountForCurrentUser();
   }
 
   constructor() {
+    const handleOnline = () => this.isOnline.set(true);
+    const handleOffline = () => this.isOnline.set(false);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+      this.destroyRef.onDestroy(() => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      });
+    }
+
     addIcons({
       cashOutline,
       carOutline,
+      cloudOfflineOutline,
       documentTextOutline,
       ellipsisHorizontalOutline,
       homeOutline,
@@ -132,6 +149,7 @@ export class TabsPage {
       peopleOutline,
       personOutline,
       receiptOutline,
+      wifiOutline,
     });
   }
 

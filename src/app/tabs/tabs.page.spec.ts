@@ -41,4 +41,20 @@ describe('TabsPage', () => {
       fixture.destroy();
     }
   });
+
+  it('updates the centered connection indicator when the browser goes offline and online', () => {
+    authService.login('fahrer', 'fahrer');
+    const fixture = TestBed.createComponent(TabsPage);
+    fixture.detectChanges();
+
+    window.dispatchEvent(new Event('offline'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Offline');
+
+    window.dispatchEvent(new Event('online'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Online');
+
+    fixture.destroy();
+  });
 });
