@@ -4,6 +4,33 @@
     <h1>Mein Profil</h1>
 
     @if (user) {
+    <section class="profile-photo-section" aria-label="Profilfoto">
+      <div class="profile-photo" aria-label="Profilbild">
+        @if (profilePhoto()) {
+        <img [src]="profilePhoto()" alt="Dein Profilfoto" />
+        } @else {
+        <ion-icon name="paw-outline" aria-hidden="true"></ion-icon>
+        }
+      </div>
+      <input
+        #photoInput
+        class="photo-input"
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        aria-label="Profilfoto auswählen"
+        (change)="onPhotoSelected($event)"
+      />
+      <ion-button class="photo-button" fill="outline" (click)="photoInput.click()">
+        <ion-icon slot="start" name="camera-outline"></ion-icon>
+        {{ profilePhoto() ? 'Profilfoto ändern' : 'Profilfoto hochladen' }}
+      </ion-button>
+      @if (profilePhoto()) {
+      <ion-button class="remove-photo-button" fill="clear" (click)="removePhoto()">Profilfoto entfernen</ion-button>
+      } @if (photoError()) {
+      <ion-note class="photo-error" color="danger" role="alert">{{ photoError() }}</ion-note>
+      }
+    </section>
+
     <ion-card class="profile-card">
       <ion-card-header><ion-card-title>Persönliche Angaben</ion-card-title></ion-card-header>
       <ion-card-content>

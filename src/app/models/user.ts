@@ -3,7 +3,7 @@ export type UserRole = 'board' | 'foster' | 'treasurer' | 'driver';
 export const USER_ROLE_LABELS: Record<UserRole, string> = {
   board: 'Vorstand',
   foster: 'Pflegestelle',
-  treasurer: 'Kassiererin',
+  treasurer: 'Kassierer',
   driver: 'Fahrer',
 };
 
@@ -16,4 +16,5 @@ export interface User {
   email: string;
   role: UserRole;
   fosterHomeId?: string;
+  profilePhoto?: string;
 }

@@ -31,7 +31,7 @@ const USERS: User[] = [
     lastName: 'Kasse',
     username: 'kassierer',
     password: 'kassierer',
-    email: 'kassiererin@meine-pfote.test',
+    email: 'kassierer@meine-pfote.test',
     role: 'treasurer',
   },
   {
@@ -87,6 +87,23 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserState();
+  }
+
+  updateCurrentUserProfilePhoto(profilePhoto: string | null): boolean {
+    const currentUser = this.currentUserState();
+    if (!currentUser) {
+      return false;
+    }
+
+    const userIndex = USERS.findIndex((user) => user.id === currentUser.id);
+    if (userIndex === -1) {
+      return false;
+    }
+
+    const updatedUser: User = { ...USERS[userIndex], profilePhoto: profilePhoto ?? undefined };
+    USERS[userIndex] = updatedUser;
+    this.currentUserState.set(updatedUser);
+    return true;
   }
 
   isLoggedIn(): boolean {

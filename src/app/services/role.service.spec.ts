@@ -41,7 +41,7 @@ describe('RoleService', () => {
   });
 
   it('provides the shared localized role labels and dashboard route', () => {
-    expect(service.getRoleLabel('treasurer')).toBe('Kassiererin');
+    expect(service.getRoleLabel('treasurer')).toBe('Kassierer');
     expect(service.getDashboardRoute()).toBe('/home/dashboard');
   });
 });
