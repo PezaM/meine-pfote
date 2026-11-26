@@ -1,13 +1,133 @@
-import type { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import type { CanActivateFn, Routes } from '@angular/router';
+import { Router } from '@angular/router';
+
+import { animalDetailGuard } from './guards/animal-detail.guard';
+import { fosterHomeGuard } from './guards/foster-home.guard';
+import { permissionGuard } from './guards/permission.guard';
+import { roleGuard } from './guards/role.guard';
+import { AuthService } from './services/auth.service';
+
+const authenticatedGuard: CanActivateFn = () => {
+  const router = inject(Router);
+  return inject(AuthService).isLoggedIn() || router.createUrlTree(['/login']);
+};
+
+const unauthenticatedGuard: CanActivateFn = () => {
+  const router = inject(Router);
+  return !inject(AuthService).isLoggedIn() || router.createUrlTree(['/home']);
+};
 
 export const routes: Routes = [
   {
+    path: 'login',
+    canActivate: [unauthenticatedGuard],
+    loadComponent: () => import('./pages/login/login.page').then((m) => m.LoginPage),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/register/register.page').then((m) => m.RegisterPage),
+  },
+  {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    canActivate: [authenticatedGuard],
+    loadComponent: () => import('./tabs/tabs.page').then((m) => m.TabsPage),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard',
+      },
+      {
+        path: 'dashboard',
+        canActivate: [permissionGuard('dashboard')],
+        loadComponent: () => import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
+      },
+      {
+        path: 'animals',
+        canActivate: [permissionGuard('animals')],
+        data: { area: 'animals', title: 'Tiere' },
+        loadComponent: () => import('./pages/animals/animals.page').then((m) => m.AnimalsPage),
+      },
+      {
+        path: 'animal-create',
+        canActivate: [roleGuard(['board'])],
+        data: { create: true },
+        loadComponent: () => import('./pages/animal-detail/animal-detail.page').then((m) => m.AnimalDetailPage),
+      },
+      {
+        path: 'animal-details/:id',
+        canActivate: [animalDetailGuard],
+        data: { area: 'animal-details', title: 'Tierdetails' },
+        loadComponent: () => import('./pages/animal-detail/animal-detail.page').then((m) => m.AnimalDetailPage),
+      },
+      {
+        path: 'foster-homes',
+        canActivate: [permissionGuard('foster-homes')],
+        data: { area: 'foster-homes', title: 'Pflegestellen' },
+        loadComponent: () => import('./pages/foster-homes/foster-homes.page').then((m) => m.FosterHomesPage),
+      },
+      {
+        path: 'foster-home-create',
+        canActivate: [roleGuard(['board'])],
+        data: { create: true },
+        loadComponent: () => import('./pages/foster-homes/foster-homes.page').then((m) => m.FosterHomesPage),
+      },
+      {
+        path: 'foster-homes/:id',
+        canActivate: [fosterHomeGuard],
+        loadComponent: () => import('./pages/foster-homes/foster-homes.page').then((m) => m.FosterHomesPage),
+      },
+      {
+        path: 'costs',
+        canActivate: [permissionGuard('costs')],
+        data: { area: 'costs', title: 'Kosten' },
+        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+      },
+      {
+        path: 'receipts',
+        canActivate: [permissionGuard('receipts')],
+        data: { area: 'receipts', title: 'Belege' },
+        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+      },
+      {
+        path: 'reports',
+        canActivate: [permissionGuard('reports')],
+        data: { area: 'reports', title: 'Berichte' },
+        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+      },
+      {
+        path: 'notifications',
+        canActivate: [permissionGuard('notifications')],
+        data: { area: 'notifications', title: 'Benachrichtigungen' },
+        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+      },
+      {
+        path: 'driver-assignments',
+        canActivate: [permissionGuard('driver-assignments')],
+        data: { area: 'driver-assignments', title: 'Fahrten' },
+        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+      },
+      {
+        path: 'profile',
+        canActivate: [permissionGuard('profile')],
+        data: { area: 'profile', title: 'Profil' },
+        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+      },
+      {
+        path: 'more',
+        canActivate: [roleGuard(['board'])],
+        loadComponent: () => import('./pages/more/more.page').then((m) => m.MorePage),
+      },
+    ],
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
   },
 ];

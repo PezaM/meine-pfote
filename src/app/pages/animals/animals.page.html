@@ -1,0 +1,39 @@
+<ion-content class="animals-content">
+  <main class="animals-page">
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE</p>
+        <h1>{{ role === 'foster' ? 'Meine Tiere' : 'Tiere' }}</h1>
+      </div>
+      @if (role === 'board') {
+      <ion-button routerLink="/home/animal-create">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Tier anlegen
+      </ion-button>
+      }
+    </header>
+
+    @if (animals.length) {
+    <section class="animal-grid" aria-label="Tierprofile">
+      @for (animal of animals; track animal.id) {
+      <ion-card [routerLink]="['/home/animal-details', animal.id]">
+        <img [src]="animal.photoUrl" [alt]="'Foto von ' + animal.name" />
+        <ion-card-content>
+          <div class="animal-heading">
+            <div>
+              <h2>{{ animal.name }}</h2>
+              <p>{{ animal.species }} · {{ animal.age }}</p>
+            </div>
+            <ion-icon name="paw-outline" aria-hidden="true"></ion-icon>
+          </div>
+          <p class="foster-home">{{ fosterHomes[animal.fosterHomeId ?? ''] ?? 'Noch keine Pflegestelle' }}</p>
+          <ion-badge color="success">{{ animal.status }}</ion-badge>
+        </ion-card-content>
+      </ion-card>
+      }
+    </section>
+    } @else {
+    <ion-note class="empty-state">Deiner Pflegestelle sind aktuell keine Tiere zugeordnet.</ion-note>
+    }
+  </main>
+</ion-content>

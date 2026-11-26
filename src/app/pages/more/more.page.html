@@ -1,0 +1,15 @@
+<ion-content class="more-content">
+  <main class="more-page">
+    <p class="eyebrow">MEINE PFOTE</p>
+    <h1>Weitere Bereiche</h1>
+
+    <ion-list class="more-list" inset="true">
+      @for (link of links; track link.path) {
+      <ion-item [routerLink]="'/home/' + link.path" detail="true" button="true">
+        <ion-icon slot="start" [name]="link.icon"></ion-icon>
+        <ion-label>{{ link.label }}</ion-label>
+      </ion-item>
+      }
+    </ion-list>
+  </main>
+</ion-content>

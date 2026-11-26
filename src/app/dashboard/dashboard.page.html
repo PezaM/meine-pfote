@@ -1,0 +1,325 @@
+<ion-content class="dashboard-content" [fullscreen]="true">
+  <main class="dashboard-page">
+    @switch (role) { @case ('board') {
+    <section class="dashboard-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · VORSTAND</p>
+        <h1>Guten Tag, {{ currentUser?.firstName }}</h1>
+        <p class="dashboard-intro">Hier ist die aktuelle Übersicht eurer Vereinsarbeit.</p>
+      </div>
+      <ion-button routerLink="/home/animals">
+        <ion-icon slot="start" name="paw-outline"></ion-icon>
+        Tiere ansehen
+      </ion-button>
+    </section>
+
+    <section class="metric-grid" aria-label="Vereinskennzahlen">
+      @for (metric of boardMetrics; track metric.label) {
+      <ion-card class="metric-card" [class]="'metric-card metric-' + metric.color">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon [name]="metric.icon"></ion-icon></div>
+          <span class="metric-value">{{ metric.value }}</span>
+          <span class="metric-label">{{ metric.label }}</span>
+        </ion-card-content>
+      </ion-card>
+      }
+    </section>
+
+    <div class="dashboard-columns">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="checkmark-circle-outline"></ion-icon> Aktuelle Aufgaben</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (task of boardTasks; track task.title) {
+          <ion-item>
+            <ion-label>
+              <h2>{{ task.title }}</h2>
+              <p>{{ task.detail }}</p>
+            </ion-label>
+            <ion-badge slot="end" color="warning">{{ task.status }}</ion-badge>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="notifications-outline"></ion-icon> Neue Benachrichtigungen</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (notification of boardNotifications; track notification) {
+          <ion-item>
+            <ion-icon slot="start" name="notifications-outline" color="primary"></ion-icon>
+            <ion-label class="ion-text-wrap">{{ notification }}</ion-label>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="people-outline"></ion-icon> Vermittlungsübersicht</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="placement-grid">
+          @for (placement of boardPlacements; track placement.label) {
+          <div class="placement-stat">
+            <strong>{{ placement.value }}</strong>
+            <span>{{ placement.label }}</span>
+            <small>{{ placement.note }}</small>
+          </div>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="paw-outline"></ion-icon> Aktuelle Vereinsaktivitäten</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (activity of boardActivities; track activity) {
+          <ion-item>
+            <ion-icon slot="start" name="checkmark-circle-outline" color="success"></ion-icon>
+            <ion-label class="ion-text-wrap">{{ activity }}</ion-label>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+    </div>
+    } @case ('foster') {
+    <section class="dashboard-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · PFLEGESTELLE</p>
+        <h1>Hallo, {{ currentUser?.firstName }}</h1>
+        <p class="dashboard-intro">Alle Neuigkeiten und Aufgaben rund um deine Schützlinge.</p>
+      </div>
+      <ion-button routerLink="/home/animals">
+        <ion-icon slot="start" name="paw-outline"></ion-icon>
+        Meine Tiere
+      </ion-button>
+    </section>
+
+    <section class="metric-grid foster-metrics" aria-label="Eigene Tiere">
+      <ion-card class="metric-card metric-green">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="paw-outline"></ion-icon></div>
+          <span class="metric-value">{{ fosterAnimals.length }}</span>
+          <span class="metric-label">Eigene Tiere</span>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="metric-card metric-amber">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="calendar-outline"></ion-icon></div>
+          <span class="metric-value">{{ fosterAppointments.length }}</span>
+          <span class="metric-label">Anstehende Tierarzttermine</span>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="metric-card metric-blue">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="checkmark-circle-outline"></ion-icon></div>
+          <span class="metric-value">{{ fosterTasks.length }}</span>
+          <span class="metric-label">Offene Aufgaben</span>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <div class="dashboard-columns">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="paw-outline"></ion-icon> Deine Tiere</ion-card-title>
+        </ion-card-header>
+        @if (fosterAnimals.length) {
+        <ion-list lines="full">
+          @for (animal of fosterAnimals; track animal.id) {
+          <ion-item [routerLink]="['/home/animal-details', animal.id]">
+            <ion-label>
+              <h2>{{ animal.name }} <span class="animal-meta">· {{ animal.species }}, {{ animal.age }}</span></h2>
+              <p>Deine Pflegestelle</p>
+            </ion-label>
+            <ion-badge slot="end" [color]="animalStatusColor(animal.status)">{{ animal.status }}</ion-badge>
+          </ion-item>
+          }
+        </ion-list>
+        } @else {
+        <ion-card-content><p>Aktuell sind keine Tiere zugeordnet.</p></ion-card-content>
+        }
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="calendar-outline"></ion-icon> Anstehende Tierarzttermine</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (appointment of fosterAppointments; track appointment.title) {
+          <ion-item>
+            <ion-label>
+              <h2>{{ appointment.title }} · {{ appointment.animal }}</h2>
+              <p>{{ appointment.date }} · {{ appointment.location }}</p>
+            </ion-label>
+            <ion-badge slot="end" color="primary">Termin</ion-badge>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="notifications-outline"></ion-icon> Erinnerungen</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (reminder of fosterReminders; track reminder) {
+          <ion-item>
+            <ion-icon slot="start" name="time-outline" color="warning"></ion-icon>
+            <ion-label class="ion-text-wrap">{{ reminder }}</ion-label>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="checkmark-circle-outline"></ion-icon> Offene Aufgaben</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (task of fosterTasks; track task.title) {
+          <ion-item>
+            <ion-label
+              ><h2>{{ task.title }}</h2>
+              <p>{{ task.due }}</p></ion-label
+            >
+            <ion-badge slot="end" color="warning">Offen</ion-badge>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+    </div>
+    } @case ('treasurer') {
+    <section class="dashboard-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · KASSE</p>
+        <h1>Finanzübersicht</h1>
+        <p class="dashboard-intro">Die wichtigsten Zahlen und zuletzt erfassten Kosten.</p>
+      </div>
+      <ion-button routerLink="/home/receipts">
+        <ion-icon slot="start" name="document-text-outline"></ion-icon>
+        Belege prüfen
+      </ion-button>
+    </section>
+
+    <section class="metric-grid treasurer-metrics" aria-label="Finanzkennzahlen">
+      <ion-card class="metric-card metric-green">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="cash-outline"></ion-icon></div>
+          <span class="metric-value metric-currency">{{ formatCurrency(13450) }}</span>
+          <span class="metric-label">Gesamtausgaben</span>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="metric-card metric-blue">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="calendar-outline"></ion-icon></div>
+          <span class="metric-value metric-currency">{{ formatCurrency(2184.35) }}</span>
+          <span class="metric-label">Ausgaben im November</span>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="metric-card metric-amber">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="time-outline"></ion-icon></div>
+          <span class="metric-value">3</span>
+          <span class="metric-label">Offene Kostenfreigaben</span>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="metric-card metric-coral">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="document-text-outline"></ion-icon></div>
+          <span class="metric-value">2</span>
+          <span class="metric-label">Nicht zugeordnete Belege</span>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <div class="dashboard-columns">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="cash-outline"></ion-icon> Kosten nach Kategorien</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (category of treasurerCategories; track category.name) {
+          <ion-item>
+            <ion-label>{{ category.name }}</ion-label>
+            <strong slot="end">{{ formatCurrency(category.amount) }}</strong>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title><ion-icon name="document-text-outline"></ion-icon> Zuletzt erfasste Kosten</ion-card-title>
+        </ion-card-header>
+        <ion-list lines="full">
+          @for (cost of treasurerRecentCosts; track cost.description) {
+          <ion-item>
+            <ion-label>
+              <h2>{{ cost.description }}</h2>
+              <p>{{ cost.category }} · {{ cost.date }}</p>
+            </ion-label>
+            <strong slot="end">{{ formatCurrency(cost.amount) }}</strong>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-card>
+    </div>
+    } @case ('driver') {
+    <section class="dashboard-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · FAHRDIENST</p>
+        <h1>Deine Einsätze, {{ currentUser?.firstName }}</h1>
+        <p class="dashboard-intro">Alle wichtigen Informationen für deine nächsten Tiertransporte.</p>
+      </div>
+      <ion-button routerLink="/home/driver-assignments">
+        <ion-icon slot="start" name="location-outline"></ion-icon>
+        Einsätze ansehen
+      </ion-button>
+    </section>
+
+    <section class="metric-grid driver-metrics" aria-label="Fahrtenübersicht">
+      @for (metric of driverMetrics; track metric.label) {
+      <ion-card class="metric-card" [class]="'metric-card metric-' + metric.color">
+        <ion-card-content>
+          <div class="metric-icon"><ion-icon name="location-outline"></ion-icon></div>
+          <span class="metric-value">{{ metric.value }}</span>
+          <span class="metric-label">{{ metric.label }}</span>
+        </ion-card-content>
+      </ion-card>
+      }
+    </section>
+
+    <ion-card class="driver-list-card">
+      <ion-card-header>
+        <ion-card-title><ion-icon name="car-outline"></ion-icon> Deine nächsten Einsätze</ion-card-title>
+      </ion-card-header>
+      @if (driverAssignments.length) {
+      <ion-list lines="full">
+        @for (assignment of upcomingDriverAssignments; track assignment.id) {
+        <ion-item class="driver-assignment" [routerLink]="['/home/animal-details', assignment.animalId]">
+          <ion-label class="ion-text-wrap">
+            <h2>{{ assignment.animal }}</h2>
+            <p class="trip-time"><ion-icon name="time-outline"></ion-icon> {{ assignment.pickupTime }}</p>
+            <p><ion-icon name="location-outline"></ion-icon> Abholung: {{ assignment.pickup }}</p>
+            <p><ion-icon name="location-outline"></ion-icon> Ziel: {{ assignment.destination }}</p>
+            <p class="transport-note"><ion-icon name="warning-outline"></ion-icon> {{ assignment.notes }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="driverStatusColor(assignment.status)">{{ assignment.status }}</ion-badge>
+        </ion-item>
+        }
+      </ion-list>
+      } @else {
+      <ion-card-content><p>Du hast aktuell keine zugewiesenen Einsätze.</p></ion-card-content>
+      }
+    </ion-card>
+    } @default {
+    <ion-card>
+      <ion-card-content><ion-note>Bitte melde dich erneut an, um dein Dashboard zu laden.</ion-note></ion-card-content>
+    </ion-card>
+    } }
+  </main>
+</ion-content>

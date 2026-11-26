@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  height: 100%;
+  background: #f3f7f2;
+}
+
+.app-toolbar {
+  --background: #fff;
+  --min-height: 60px;
+  --padding-start: 18px;
+  --padding-end: 12px;
+  border-bottom: 1px solid #e6eee6;
+  color: #20352a;
+}
+
+.app-header {
+  z-index: 1;
+}
+
+.app-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.current-user {
+  display: none;
+  color: #68766d;
+  font-size: 13px;
+}
+
+.logout-button {
+  --color: #377c5b;
+  font-weight: 600;
+}
+
+ion-tab-bar {
+  --background: #fff;
+  --border: 1px solid #e6eee6;
+  height: 64px;
+  padding: 4px max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
+}
+
+ion-tab-button {
+  --color: #77847b;
+  --color-selected: #377c5b;
+  min-width: 0;
+  max-width: none;
+  font-size: 11px;
+
+  ion-icon {
+    font-size: 21px;
+  }
+}
+
+ion-tab-button.tab-selected {
+  font-weight: 650;
+}
+
+@media (min-width: 700px) {
+  .current-user {
+    display: inline;
+  }
+
+  ion-tab-bar {
+    height: 68px;
+    padding-inline: max(24px, calc((100vw - 1200px) / 2));
+  }
+
+  ion-tab-button {
+    flex-direction: row;
+    gap: 9px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .app-toolbar {
+    --padding-start: max(32px, calc((100vw - 1200px) / 2));
+    --padding-end: max(24px, calc((100vw - 1200px) / 2));
+  }
+}

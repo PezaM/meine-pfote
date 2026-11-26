@@ -1,0 +1,29 @@
+<ion-tabs>
+  <ion-header slot="top" class="app-header">
+    <ion-toolbar class="app-toolbar">
+      <ion-label class="app-name">Meine Pfote</ion-label>
+      <ion-buttons slot="end">
+        @if (currentUser) {
+        <span class="current-user">{{ currentUser.firstName }} · {{ roleLabel }}</span>
+        }
+        <ion-button class="logout-button" fill="clear" (click)="logout()">Abmelden</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+    <ion-router-outlet></ion-router-outlet>
+
+  <ion-tab-bar slot="bottom">
+    @for (item of navigation; track item.path) {
+    <ion-tab-button
+      [tab]="item.path"
+      [routerLink]="'/home/' + item.path"
+      routerLinkActive="tab-selected"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <ion-icon [name]="item.icon"></ion-icon>
+      <ion-label>{{ item.label }}</ion-label>
+    </ion-tab-button>
+    }
+  </ion-tab-bar>
+</ion-tabs>

@@ -1,0 +1,179 @@
+<ion-content class="foster-content">
+  <main class="foster-page">
+    @if (isList) {
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE</p>
+        <h1>Pflegestellen</h1>
+      </div>
+      @if (role === 'board') {
+      <ion-button routerLink="/home/foster-home-create">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Pflegestelle anlegen
+      </ion-button>
+      }
+    </header>
+
+    <section class="foster-grid" aria-label="Pflegestellenübersicht">
+      @for (fosterHome of fosterHomes; track fosterHome.id) {
+      <ion-card [routerLink]="['/home/foster-homes', fosterHome.id]">
+        <ion-card-content>
+          <div class="card-heading">
+            <div class="home-icon"><ion-icon name="people-outline"></ion-icon></div>
+            <ion-badge [color]="fosterHome.status === 'Aktiv' ? 'success' : 'medium'"
+              >{{ fosterHome.status }}</ion-badge
+            >
+          </div>
+          <h2>{{ fosterHome.name }}</h2>
+          <p class="location">{{ fosterHome.location }}</p>
+          <div class="home-stats">
+            <span><strong>{{ fosterHome.animalCount }} / {{ fosterHome.capacity }}</strong> Tiere</span>
+            <ion-badge [color]="fosterHome.available ? 'primary' : 'warning'">
+              {{ fosterHome.available ? 'Verfügbar' : 'Ausgelastet' }}
+            </ion-badge>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      }
+    </section>
+    } @else if (isCreate) {
+    <a class="back-link" routerLink="/home/foster-homes">← Zurück zu den Pflegestellen</a>
+    <h1>Pflegestelle anlegen</h1>
+    <ion-card>
+      <ion-card-content>
+        <form [formGroup]="homeForm" (ngSubmit)="saveHome()">
+          <ion-item
+            ><ion-input label="Name der Pflegestelle" labelPlacement="stacked" formControlName="name"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input label="Ansprechperson" labelPlacement="stacked" formControlName="contactName"></ion-input
+          ></ion-item>
+          <ion-item><ion-input label="Ort" labelPlacement="stacked" formControlName="location"></ion-input></ion-item>
+          <ion-item
+            ><ion-input label="Adresse" labelPlacement="stacked" formControlName="address"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input label="Telefon" labelPlacement="stacked" type="tel" formControlName="phone"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input label="E-Mail" labelPlacement="stacked" type="email" formControlName="email"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input
+              label="Kapazität (Tiere)"
+              labelPlacement="stacked"
+              type="number"
+              min="0"
+              formControlName="capacity"
+            ></ion-input
+          ></ion-item>
+          <ion-button expand="block" type="submit" [disabled]="homeForm.invalid">Pflegestelle anlegen</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    } @else if (home) {
+    <a class="back-link" routerLink="/home/foster-homes">← Zurück zu den Pflegestellen</a>
+    <header class="detail-heading">
+      <div>
+        <p class="eyebrow">{{ role === 'foster' ? 'MEIN PROFIL' : 'PFLEGESTELLENPROFIL' }}</p>
+        <h1>{{ home.name }}</h1>
+        <p>{{ home.location }} · {{ home.animalCount }} von {{ home.capacity }} Plätzen belegt</p>
+        <p>{{ home.available ? 'Verfügbar für neue Tiere' : 'Aktuell keine freien Plätze' }}</p>
+      </div>
+      <ion-badge [color]="home.status === 'Aktiv' ? 'success' : 'medium'">{{ home.status }}</ion-badge>
+    </header>
+
+    @if (canEdit) {
+    <ion-card>
+      <ion-card-header><ion-card-title>Kontaktdaten</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="homeForm" (ngSubmit)="saveHome()">
+          @if (role === 'board') {
+          <ion-item
+            ><ion-input label="Name der Pflegestelle" labelPlacement="stacked" formControlName="name"></ion-input
+          ></ion-item>
+          }
+          <ion-item
+            ><ion-input label="Ansprechperson" labelPlacement="stacked" formControlName="contactName"></ion-input
+          ></ion-item>
+          <ion-item><ion-input label="Ort" labelPlacement="stacked" formControlName="location"></ion-input></ion-item>
+          <ion-item
+            ><ion-input label="Adresse" labelPlacement="stacked" formControlName="address"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input label="Telefon" labelPlacement="stacked" type="tel" formControlName="phone"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input label="E-Mail" labelPlacement="stacked" type="email" formControlName="email"></ion-input
+          ></ion-item>
+          @if (role === 'board') {
+          <ion-item
+            ><ion-input
+              label="Kapazität (Tiere)"
+              labelPlacement="stacked"
+              type="number"
+              min="0"
+              formControlName="capacity"
+            ></ion-input
+          ></ion-item>
+          <ion-item><ion-toggle formControlName="available">Neue Tiere aufnehmen</ion-toggle></ion-item>
+          <ion-item><ion-input label="Status" labelPlacement="stacked" formControlName="status"></ion-input></ion-item>
+          }
+          <ion-button expand="block" type="submit" [disabled]="homeForm.invalid">Kontaktdaten speichern</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    }
+
+    <ion-card>
+      <ion-card-header><ion-card-title>Belegung · {{ animals.length }} Tiere</ion-card-title></ion-card-header>
+      <ion-card-content>
+        @if (animals.length) {
+        <ul class="animal-list">
+          @for (animal of animals; track animal.id) {
+          <li><a [routerLink]="['/home/animal-details', animal.id]">{{ animal.name }} · {{ animal.species }}</a></li>
+          }
+        </ul>
+        } @else {
+        <p>Der Pflegestelle sind aktuell keine Tiere zugewiesen.</p>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    @if (role === 'board' || role === 'treasurer') {
+    <ion-card>
+      <ion-card-header><ion-card-title>Kosten dieser Pflegestelle</ion-card-title></ion-card-header>
+      <ion-card-content>
+        @if (home.costs.length) {
+        <ul class="cost-list">
+          @for (cost of home.costs; track cost.id) {
+          <li>{{ cost.date }} · {{ cost.description }} · {{ formatCurrency(cost.amount) }}</li>
+          }
+        </ul>
+        } @if (role === 'treasurer') {
+        <form class="cost-form" [formGroup]="costForm" (ngSubmit)="assignCost()">
+          <ion-item
+            ><ion-input label="Kostenbeschreibung" labelPlacement="stacked" formControlName="description"></ion-input
+          ></ion-item>
+          <ion-item
+            ><ion-input
+              label="Betrag (€)"
+              labelPlacement="stacked"
+              type="number"
+              min="0.01"
+              step="0.01"
+              formControlName="amount"
+            ></ion-input
+          ></ion-item>
+          <ion-button expand="block" type="submit" [disabled]="costForm.invalid">Kosten zuordnen</ion-button>
+        </form>
+        }
+      </ion-card-content>
+    </ion-card>
+    } } @else {
+    <ion-note color="danger">Dieses Pflegestellenprofil ist nicht verfügbar.</ion-note>
+    } @if (statusMessage) {
+    <ion-note class="status-message" role="status">{{ statusMessage }}</ion-note>
+    }
+  </main>
+</ion-content>

@@ -1,0 +1,173 @@
+<ion-content class="register-content">
+  <main class="register-layout">
+    <section class="register-card" aria-labelledby="register-title">
+      <div class="brand-mark" aria-label="Logo des Tierschutzvereins">
+        <ion-icon name="paw-outline" aria-hidden="true"></ion-icon>
+      </div>
+
+      <p class="eyebrow">MEINE PFOTE</p>
+      <h1 id="register-title">Konto erstellen</h1>
+      <p class="subtitle">Schön, dass du unser Team unterstützen möchtest.</p>
+
+      <form [formGroup]="registrationForm" (ngSubmit)="submitRegistration()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <ion-item class="form-field" lines="none">
+              <ion-input
+                label="Vorname"
+                labelPlacement="stacked"
+                placeholder="Vorname"
+                autocomplete="given-name"
+                formControlName="firstName"
+              ></ion-input>
+            </ion-item>
+            @if (registrationForm.controls.firstName.invalid && (registrationForm.controls.firstName.touched ||
+            submitted)) {
+            <ion-note class="field-error" color="danger">Bitte gib deinen Vornamen ein.</ion-note>
+            }
+          </div>
+
+          <div class="field">
+            <ion-item class="form-field" lines="none">
+              <ion-input
+                label="Nachname"
+                labelPlacement="stacked"
+                placeholder="Nachname"
+                autocomplete="family-name"
+                formControlName="lastName"
+              ></ion-input>
+            </ion-item>
+            @if (registrationForm.controls.lastName.invalid && (registrationForm.controls.lastName.touched ||
+            submitted)) {
+            <ion-note class="field-error" color="danger">Bitte gib deinen Nachnamen ein.</ion-note>
+            }
+          </div>
+
+          <div class="field field-full">
+            <ion-item class="form-field" lines="none">
+              <ion-input
+                label="E-Mail-Adresse"
+                labelPlacement="stacked"
+                placeholder="name@beispiel.de"
+                type="email"
+                autocomplete="email"
+                formControlName="email"
+              ></ion-input>
+            </ion-item>
+            @if (registrationForm.controls.email.invalid && (registrationForm.controls.email.touched || submitted)) {
+            <ion-note class="field-error" color="danger">
+              @if (registrationForm.controls.email.hasError('required')) { Bitte gib deine E-Mail-Adresse ein. } @else {
+              Bitte gib eine gültige E-Mail-Adresse ein. }
+            </ion-note>
+            }
+          </div>
+
+          <div class="field field-full">
+            <ion-item class="form-field" lines="none">
+              <ion-input
+                label="Benutzername"
+                labelPlacement="stacked"
+                placeholder="Benutzername wählen"
+                autocomplete="username"
+                formControlName="username"
+              ></ion-input>
+            </ion-item>
+            @if (registrationForm.controls.username.invalid && (registrationForm.controls.username.touched ||
+            submitted)) {
+            <ion-note class="field-error" color="danger">
+              @if (registrationForm.controls.username.hasError('usernameTaken')) { Dieser Benutzername ist bereits
+              vergeben. } @else { Bitte wähle einen Benutzernamen. }
+            </ion-note>
+            }
+          </div>
+
+          <div class="field">
+            <ion-item class="form-field" lines="none">
+              <ion-input
+                label="Passwort"
+                labelPlacement="stacked"
+                placeholder="Passwort"
+                type="password"
+                autocomplete="new-password"
+                formControlName="password"
+              ></ion-input>
+            </ion-item>
+            @if (registrationForm.controls.password.invalid && (registrationForm.controls.password.touched ||
+            submitted)) {
+            <ion-note class="field-error" color="danger">Bitte gib ein Passwort ein.</ion-note>
+            }
+          </div>
+
+          <div class="field">
+            <ion-item class="form-field" lines="none">
+              <ion-input
+                label="Passwort wiederholen"
+                labelPlacement="stacked"
+                placeholder="Passwort wiederholen"
+                type="password"
+                autocomplete="new-password"
+                formControlName="repeatedPassword"
+              ></ion-input>
+            </ion-item>
+            @if (registrationForm.controls.repeatedPassword.invalid &&
+            (registrationForm.controls.repeatedPassword.touched || submitted)) {
+            <ion-note class="field-error" color="danger">Bitte wiederhole dein Passwort.</ion-note>
+            } @else if (registrationForm.hasError('passwordMismatch') &&
+            (registrationForm.controls.repeatedPassword.touched || submitted)) {
+            <ion-note class="field-error" color="danger">Die Passwörter stimmen nicht überein.</ion-note>
+            }
+          </div>
+
+          <div class="field field-full">
+            <ion-item class="form-field" lines="none">
+              <ion-select
+                label="Benutzerrolle"
+                labelPlacement="stacked"
+                placeholder="Rolle auswählen"
+                interface="popover"
+                formControlName="role"
+              >
+                @for (role of roles; track role) {
+                <ion-select-option [value]="role.value">{{ role.label }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            @if (registrationForm.controls.role.invalid && (registrationForm.controls.role.touched || submitted)) {
+            <ion-note class="field-error" color="danger">Bitte wähle eine Benutzerrolle aus.</ion-note>
+            }
+          </div>
+
+          @if (isFosterHomeRequired) {
+          <div class="field field-full">
+            <ion-item class="form-field" lines="none">
+              <ion-select
+                label="Zugehörige Pflegestelle"
+                labelPlacement="stacked"
+                placeholder="Pflegestelle auswählen"
+                interface="popover"
+                formControlName="fosterHomeId"
+              >
+                @for (home of fosterHomes; track home.id) {
+                <ion-select-option [value]="home.id">{{ home.name }} · {{ home.location }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+            @if (registrationForm.hasError('fosterHomeRequired') && (registrationForm.controls.fosterHomeId.touched ||
+            submitted)) {
+            <ion-note class="field-error" color="danger">Bitte wähle deine Pflegestelle aus.</ion-note>
+            }
+          </div>
+          }
+        </div>
+
+        @if (errorMessage) {
+        <ion-note class="form-error" color="danger" role="alert">{{ errorMessage }}</ion-note>
+        }
+
+        <ion-button class="submit-button" type="submit" expand="block">Registrieren</ion-button>
+      </form>
+
+      <ion-button class="back-button" fill="clear" routerLink="/login">Zurück zum Login</ion-button>
+    </section>
+  </main>
+</ion-content>

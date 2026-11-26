@@ -1,0 +1,68 @@
+<ion-content class="login-content">
+  <main class="login-layout">
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="brand-mark" aria-label="Logo des Tierschutzvereins">
+        <ion-icon name="paw-outline" aria-hidden="true"></ion-icon>
+      </div>
+
+      <p class="eyebrow">MEINE PFOTE</p>
+      <h1 id="login-title">Willkommen zurück</h1>
+      <p class="subtitle">Melde dich an, um fortzufahren.</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+        <ion-item class="form-field" lines="none">
+          <ion-icon slot="start" name="person-outline" aria-hidden="true"></ion-icon>
+          <ion-input
+            label="Benutzername"
+            labelPlacement="stacked"
+            placeholder="Benutzername eingeben"
+            autocomplete="username"
+            formControlName="username"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item class="form-field" lines="none">
+          <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
+          <ion-input
+            label="Passwort"
+            labelPlacement="stacked"
+            placeholder="Passwort eingeben"
+            type="password"
+            autocomplete="current-password"
+            formControlName="password"
+          ></ion-input>
+        </ion-item>
+
+        @if (errorMessage) {
+        <ion-note class="error-message" color="danger" role="alert">{{ errorMessage }}</ion-note>
+        }
+
+        <ion-button class="submit-button" type="submit" expand="block">Anmelden</ion-button>
+      </form>
+
+      <p class="register-prompt">
+        Noch nicht registriert?
+        <a routerLink="/register">Jetzt registrieren</a>
+      </p>
+
+      <section class="test-access" aria-labelledby="test-access-title">
+        <h2 id="test-access-title">Testzugänge</h2>
+        <p>Wähle einen Zugang, um die Anmeldedaten zu übernehmen.</p>
+
+        <div class="test-user-list">
+          @for (user of testUsers; track user.username) {
+          <button
+            class="test-user"
+            type="button"
+            (click)="selectTestUser(user.username, user.password)"
+            [attr.aria-label]="'Testzugang ' + user.role + ' auswählen'"
+          >
+            <span class="test-user-role">{{ roleLabels[user.role] }}</span>
+            <span class="test-user-credentials">{{ user.username }} / {{ user.password }}</span>
+          </button>
+          }
+        </div>
+      </section>
+    </section>
+  </main>
+</ion-content>

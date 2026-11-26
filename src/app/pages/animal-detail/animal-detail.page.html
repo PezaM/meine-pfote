@@ -1,0 +1,157 @@
+<ion-content class="detail-content">
+  <main class="detail-page">
+    <a class="back-link" [routerLink]="role === 'driver' ? '/home/dashboard' : '/home/animals'">
+      {{ role === 'driver' ? '← Zurück zum Dashboard' : '← Zurück zu den Tieren' }}
+    </a>
+
+    @if (isCreate) {
+    <ion-card>
+      <ion-card-header><ion-card-title>Tier anlegen</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="animalForm" (ngSubmit)="submit()">
+          <ion-item>
+            <ion-input label="Name" labelPlacement="stacked" formControlName="name" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Tierart / Rasse" labelPlacement="stacked" formControlName="species" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Alter" labelPlacement="stacked" formControlName="age"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-select label="Pflegestelle" labelPlacement="stacked" formControlName="fosterHomeId">
+              <ion-select-option value="">Noch nicht zugewiesen</ion-select-option>
+              @for (home of fosterHomes; track home.id) {
+              <ion-select-option [value]="home.id">{{ home.name }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Status" labelPlacement="stacked" formControlName="status"></ion-input>
+          </ion-item>
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="!animalForm.controls.name.value.trim() || !animalForm.controls.species.value.trim()"
+          >
+            Tier anlegen
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    } @else if (animal) {
+    <header class="animal-header">
+      <img [src]="animal.photoUrl" [alt]="'Foto von ' + animal.name" />
+      <div>
+        <p class="eyebrow">{{ animal.species }}@if (role !== 'driver') { · {{ animal.age }} }</p>
+        <h1>{{ animal.name }}</h1>
+        @if (role !== 'driver') {
+        <ion-badge color="success">{{ animal.status }}</ion-badge>
+        }
+      </div>
+    </header>
+
+    @if (role === 'driver' && animal.transport) {
+    <ion-card>
+      <ion-card-header><ion-card-title>Transportinformationen</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <p><strong>Abholort:</strong> {{ animal.transport.pickupLocation }}</p>
+        <p><strong>Zielort:</strong> {{ animal.transport.destination }}</p>
+        <p><strong>Transporthinweise:</strong> {{ animal.transport.notes }}</p>
+      </ion-card-content>
+    </ion-card>
+    } @else if (role !== 'driver') { @if (canEdit) {
+    <ion-card>
+      <ion-card-header
+        ><ion-card-title
+          >{{ role === 'board' ? 'Tierprofil bearbeiten' : 'Eigene Tierdaten aktualisieren' }}</ion-card-title
+        ></ion-card-header
+      >
+      <ion-card-content>
+        <form [formGroup]="animalForm" (ngSubmit)="submit()">
+          @if (role === 'board') {
+          <ion-item><ion-input label="Name" labelPlacement="stacked" formControlName="name"></ion-input></ion-item>
+          <ion-item
+            ><ion-input label="Tierart / Rasse" labelPlacement="stacked" formControlName="species"></ion-input
+          ></ion-item>
+          <ion-item><ion-input label="Alter" labelPlacement="stacked" formControlName="age"></ion-input></ion-item>
+          <ion-item>
+            <ion-select label="Pflegestelle" labelPlacement="stacked" formControlName="fosterHomeId">
+              <ion-select-option value="">Noch nicht zugewiesen</ion-select-option>
+              @for (home of fosterHomes; track home.id) {
+              <ion-select-option [value]="home.id">{{ home.name }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          <ion-item><ion-input label="Status" labelPlacement="stacked" formControlName="status"></ion-input></ion-item>
+          }
+          <ion-item>
+            <ion-input
+              label="Gewicht (kg)"
+              labelPlacement="stacked"
+              type="number"
+              step="0.1"
+              formControlName="weightKg"
+            ></ion-input>
+          </ion-item>
+          <ion-item
+            ><ion-input label="Foto-URL" labelPlacement="stacked" type="url" formControlName="photoUrl"></ion-input
+          ></ion-item>
+          <label class="photo-upload">
+            Foto hinzufügen
+            <input type="file" accept="image/*" (change)="selectPhoto($event)" />
+          </label>
+          <ion-item
+            ><ion-textarea label="Notizen" labelPlacement="stacked" formControlName="notes" rows="3"></ion-textarea
+          ></ion-item>
+          <ion-button expand="block" type="submit">Änderungen speichern</ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+    } @else if (role === 'foster') {
+    <ion-card>
+      <ion-card-header><ion-card-title>Tierinformationen</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <p><strong>Pflegestelle:</strong> {{ fosterHomeName(animal.fosterHomeId) }}</p>
+        <p><strong>Gewicht:</strong> {{ animal.weightKg }} kg</p>
+        <p>{{ animal.notes }}</p>
+      </ion-card-content>
+    </ion-card>
+    } @if (role === 'board' || role === 'foster') {
+    <ion-card>
+      <ion-card-header><ion-card-title>Gesundheit & Medizin</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <p><strong>Gesundheit:</strong> {{ animal.healthInformation }}</p>
+        <p><strong>Medizinische Informationen:</strong> {{ animal.medicalInformation }}</p>
+      </ion-card-content>
+    </ion-card>
+    } @if (role === 'board') {
+    <ion-card>
+      <ion-card-header><ion-card-title>Vermittlung</ion-card-title></ion-card-header>
+      <ion-card-content>{{ animal.placementStatus }}</ion-card-content>
+    </ion-card>
+    } @if (role === 'board' || role === 'foster' || role === 'treasurer') {
+    <ion-card>
+      <ion-card-header><ion-card-title>Kosten & Belege</ion-card-title></ion-card-header>
+      <ion-card-content>
+        @for (cost of animal.costs; track cost.description) {
+        <p>{{ cost.date }} · {{ cost.description }} · {{ formatCurrency(cost.amount) }}</p>
+        } @for (receipt of animal.receipts; track receipt.id) {
+        <p>
+          {{ receipt.description }} · {{ formatCurrency(receipt.amount) }}
+          <ion-badge [color]="receipt.assigned ? 'success' : 'warning'"
+            >{{ receipt.assigned ? 'Zugeordnet' : 'Offen' }}</ion-badge
+          >
+        </p>
+        } @if (canAssignReceipts && hasUnassignedReceipts) {
+        <ion-button fill="outline" (click)="assignReceipts()">Offene Belege zuordnen</ion-button>
+        }
+      </ion-card-content>
+    </ion-card>
+    } } @if (statusMessage) {
+    <ion-note class="status-message" role="status">{{ statusMessage }}</ion-note>
+    } } @else {
+    <ion-note class="status-message" color="danger">Dieses Tierprofil ist nicht verfügbar.</ion-note>
+    }
+  </main>
+</ion-content>
