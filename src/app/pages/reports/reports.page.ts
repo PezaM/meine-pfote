@@ -5,10 +5,16 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonContent,
+  IonButton,
+  IonIcon,
   IonItem,
   IonLabel,
   IonList,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { alertCircleOutline, calendarOutline, downloadOutline } from 'ionicons/icons';
 
 interface ReportRow {
   label: string;
@@ -19,7 +25,20 @@ interface ReportRow {
   selector: 'app-reports',
   templateUrl: './reports.page.html',
   styleUrls: ['./reports.page.scss'],
-  imports: [IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonItem, IonLabel, IonList],
+  imports: [
+    IonButton,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonContent,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonSelect,
+    IonSelectOption,
+  ],
 })
 export class ReportsPage {
   readonly month = 'November 2026';
@@ -44,6 +63,10 @@ export class ReportsPage {
     { label: 'Weitere / nicht zugeordnet', amount: 1235.45 },
   ];
   private readonly currencyFormatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+
+  constructor() {
+    addIcons({ alertCircleOutline, calendarOutline, downloadOutline });
+  }
 
   formatCurrency(amount: number): string {
     return this.currencyFormatter.format(amount);

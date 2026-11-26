@@ -12,11 +12,14 @@ import {
   IonContent,
   IonInput,
   IonItem,
+  IonIcon,
   IonNote,
   IonSelect,
   IonSelectOption,
   IonTextarea,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { addOutline, calendarOutline, eyeOutline, funnelOutline, searchOutline } from 'ionicons/icons';
 import { map } from 'rxjs';
 
 import type { Animal } from '../../models/animal';
@@ -49,6 +52,7 @@ function todayAsIsoDate(): string {
     IonContent,
     IonInput,
     IonItem,
+    IonIcon,
     IonNote,
     IonSelect,
     IonSelectOption,
@@ -92,6 +96,10 @@ export class CostsPage {
   editingCostId: string | null = null;
   private readonly currencyFormatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
   private readonly dateFormatter = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium', timeZone: 'UTC' });
+
+  constructor() {
+    addIcons({ addOutline, calendarOutline, eyeOutline, funnelOutline, searchOutline });
+  }
 
   get animals(): readonly Animal[] {
     return this.animalService.getAnimalsForCurrentUser();

@@ -59,6 +59,12 @@ describe('CostsPage role-specific views', () => {
     expect(text).toContain('Belegübersicht');
     expect(text).toContain('Futterbeleg-Peppa.jpg');
     expect(text).toContain('Beleg zuordnen');
+    expect(text).toContain('Beleg hinzufügen');
+    expect(text).toContain('Beleg ansehen');
+    expect(fixture.nativeElement.querySelector('ion-input[label="Suchen"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('ion-select[label="Belegstatus"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('ion-select[label="Kostenart"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('ion-input[label="Zeitraum ab"]')).not.toBeNull();
     fixture.destroy();
   });
 

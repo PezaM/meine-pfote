@@ -6,6 +6,42 @@
       <p>Finanz- und Vereinsübersicht für {{ month }}.</p>
     </header>
 
+    <section class="report-controls" aria-label="Berichtsoptionen">
+      <div class="period-control">
+        <div class="period-label">
+          <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+          <span>Zeitraum auswählen</span>
+        </div>
+        <div class="period-selects">
+          <ion-item>
+            <ion-select label="Auswertung nach" labelPlacement="stacked" value="month" interface="popover">
+              <ion-select-option value="month">Monat</ion-select-option>
+              <ion-select-option value="quarter">Quartal</ion-select-option>
+              <ion-select-option value="year">Jahr</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-select label="Berichtszeitraum" labelPlacement="stacked" value="november-2026" interface="popover">
+              <ion-select-option value="november-2026">November 2026</ion-select-option>
+              <ion-select-option value="q4-2026">4. Quartal 2026</ion-select-option>
+              <ion-select-option value="2026">Jahr 2026</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <p class="period-note">Kennzahlen und Kostenübersichten für den ausgewählten Zeitraum</p>
+      </div>
+      <div class="report-actions">
+        <ion-button>
+          <ion-icon slot="start" name="download-outline" aria-hidden="true"></ion-icon>
+          Bericht exportieren
+        </ion-button>
+        <ion-button fill="outline">
+          <ion-icon slot="start" name="alert-circle-outline" aria-hidden="true"></ion-icon>
+          Nicht zugeordnete Kosten anzeigen
+        </ion-button>
+      </div>
+    </section>
+
     <section class="summary-grid" aria-label="Monatskennzahlen">
       <ion-card class="summary-card">
         <ion-card-content>

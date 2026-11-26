@@ -18,6 +18,50 @@
     </header>
 
     @if (isReceiptView()) {
+    <div class="receipt-toolbar">
+      <ion-button class="add-receipt-button">
+        <ion-icon slot="start" name="add-outline" aria-hidden="true"></ion-icon>
+        Beleg hinzufügen
+      </ion-button>
+      <div class="receipt-search">
+        <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+        <ion-input label="Suchen" labelPlacement="stacked" placeholder="Belegname, Tier oder Pflegestelle"></ion-input>
+      </div>
+    </div>
+    <ion-card class="receipt-filters">
+      <ion-card-content>
+        <div class="filter-heading">
+          <ion-icon name="funnel-outline" aria-hidden="true"></ion-icon>
+          <strong>Belege filtern</strong>
+        </div>
+        <div class="filter-grid">
+          <ion-item>
+            <ion-select label="Belegstatus" labelPlacement="stacked" placeholder="Alle Status" interface="popover">
+              <ion-select-option value="all">Alle Status</ion-select-option>
+              <ion-select-option value="open">Offen</ion-select-option>
+              <ion-select-option value="checked">Geprüft</ion-select-option>
+              <ion-select-option value="processed">Bearbeitet</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-select label="Kostenart" labelPlacement="stacked" placeholder="Alle Kostenarten" interface="popover">
+              <ion-select-option value="all">Alle Kostenarten</ion-select-option>
+              <ion-select-option value="vet">Tierarzt</ion-select-option>
+              <ion-select-option value="medication">Medikamente</ion-select-option>
+              <ion-select-option value="food">Futter</ion-select-option>
+              <ion-select-option value="travel">Fahrtkosten</ion-select-option>
+              <ion-select-option value="other">Sonstiges</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Zeitraum ab" labelPlacement="stacked" type="date"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Zeitraum bis" labelPlacement="stacked" type="date"></ion-input>
+          </ion-item>
+        </div>
+      </ion-card-content>
+    </ion-card>
     <section aria-label="Belegliste">
       @if (receipts.length) {
       <div class="entry-grid">
@@ -37,11 +81,17 @@
             <p><strong>Kategorie:</strong> {{ receipt.category }}</p>
             <p><strong>Tier:</strong> {{ animalName(receipt.animalId) }}</p>
             <p><strong>Pflegestelle:</strong> {{ fosterHomeName(receipt.fosterHomeId) }}</p>
-            @if (canAssignReceipts) {
-            <ion-button fill="outline" size="small" (click)="toggleReceiptAssignment(receipt)">
-              {{ receipt.receiptAssigned ? 'Zuordnung aufheben' : 'Beleg zuordnen' }}
-            </ion-button>
-            }
+            <div class="entry-actions">
+              <ion-button fill="outline" size="small">
+                <ion-icon slot="start" name="eye-outline" aria-hidden="true"></ion-icon>
+                Beleg ansehen
+              </ion-button>
+              @if (canAssignReceipts) {
+              <ion-button fill="outline" size="small" (click)="toggleReceiptAssignment(receipt)">
+                {{ receipt.receiptAssigned ? 'Zuordnung aufheben' : 'Beleg zuordnen' }}
+              </ion-button>
+              }
+            </div>
           </ion-card-content>
         </ion-card>
         }

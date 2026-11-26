@@ -49,6 +49,7 @@
 }
 
 .form-card,
+.receipt-filters,
 .entry-card {
   margin: 0;
   border: 1px solid #e6eee6;
@@ -59,6 +60,69 @@
 
 .form-card {
   margin-bottom: 28px;
+}
+
+.receipt-toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(240px, 1fr);
+  align-items: end;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.add-receipt-button {
+  --background: #1f5f43;
+  --color: #fff;
+  min-height: 48px;
+  margin: 0;
+  font-weight: 650;
+}
+
+.receipt-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 3px 14px;
+  border: 1px solid #e5ebe6;
+  border-radius: 12px;
+  background: #fff;
+  color: #526057;
+
+  ion-icon {
+    flex: 0 0 auto;
+    font-size: 19px;
+  }
+
+  ion-input {
+    --highlight-color-focused: #1f5f43;
+  }
+}
+
+.receipt-filters {
+  margin: 0 0 22px;
+
+  ion-card-content {
+    padding: 16px;
+  }
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #304337;
+
+  ion-icon {
+    color: #1f5f43;
+  }
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .form-card ion-card-title,
@@ -217,7 +281,27 @@ ion-item {
     grid-template-columns: 1fr;
   }
 
+  .receipt-toolbar {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .add-receipt-button {
+    width: 100%;
+    margin: 0;
+  }
+
+  .filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .description-field {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
   }
 }

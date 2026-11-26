@@ -31,6 +31,9 @@ describe('ReportsPage', () => {
     expect(text).toContain('Kosten nach Pflegestellen');
     expect(text).toContain('Aufgenommene Tiere');
     expect(text).toContain('18');
+    expect(text).toContain('Zeitraum auswählen');
+    expect(text).toContain('Bericht exportieren');
+    expect(text).toContain('Nicht zugeordnete Kosten anzeigen');
     fixture.destroy();
   });
 
