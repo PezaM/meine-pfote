@@ -1,0 +1,164 @@
+.assignments-content {
+  --background: #f3f7f2;
+}
+
+.assignments-page {
+  width: min(100% - 32px, 960px);
+  margin: 0 auto;
+  padding: 28px 0 42px;
+}
+
+.page-heading,
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.page-heading {
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    color: #20352a;
+    font-size: clamp(26px, 5vw, 36px);
+  }
+}
+
+.eyebrow,
+.assignment-number {
+  margin: 0 0 8px;
+  color: #1f5f43;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.page-intro {
+  margin: 8px 0 0;
+  color: #526057;
+  line-height: 1.5;
+}
+
+.assignment-list {
+  display: grid;
+  gap: 14px;
+}
+
+.assignment-card {
+  margin: 0;
+  border: 1px solid #e6eee6;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 26px rgb(34 70 48 / 5%);
+
+  ion-card-title {
+    color: #20352a;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  ion-card-content > p {
+    margin: 0 0 12px;
+    color: #304337;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+.card-heading {
+  align-items: flex-start;
+
+  > div {
+    min-width: 0;
+  }
+
+  ion-badge {
+    flex-shrink: 0;
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+}
+
+.assignment-number {
+  margin-bottom: 7px;
+  font-size: 11px;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  ion-icon {
+    flex: 0 0 auto;
+    margin-top: 3px;
+    color: #1f5f43;
+    font-size: 20px;
+  }
+}
+
+.assignment-detail .info-row span {
+  display: grid;
+  gap: 3px;
+}
+
+.assignment-detail .info-row strong,
+.transport-notes strong {
+  color: #20352a;
+}
+
+.transport-notes {
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f3f7f2;
+  color: #304337;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+
+  p {
+    margin: 5px 0 0;
+  }
+}
+
+.action-button {
+  min-height: 52px;
+  margin: 16px 0 0;
+  --background: #1f5f43;
+  --border-radius: 12px;
+  --box-shadow: none;
+  --color: #fff;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.back-button {
+  margin: 0 0 16px -12px;
+  --color: #1f5f43;
+  font-size: 15px;
+}
+
+.status-message {
+  display: block;
+  margin-top: 14px;
+}
+
+@media (max-width: 600px) {
+  .assignments-page {
+    width: min(100% - 24px, 560px);
+    padding-top: 22px;
+    padding-bottom: 32px;
+  }
+
+  .card-heading {
+    gap: 8px;
+  }
+
+  .assignment-card ion-card-content > p {
+    font-size: 14px;
+  }
+}

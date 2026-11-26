@@ -3,6 +3,7 @@ import type { CanActivateFn, Routes } from '@angular/router';
 import { Router } from '@angular/router';
 
 import { animalDetailGuard } from './guards/animal-detail.guard';
+import { driverAssignmentGuard } from './guards/driver-assignment.guard';
 import { fosterHomeGuard } from './guards/foster-home.guard';
 import { permissionGuard } from './guards/permission.guard';
 import { roleGuard } from './guards/role.guard';
@@ -112,8 +113,16 @@ export const routes: Routes = [
       {
         path: 'driver-assignments',
         canActivate: [permissionGuard('driver-assignments')],
-        data: { area: 'driver-assignments', title: 'Fahrten' },
-        loadComponent: () => import('./pages/section/section.page').then((m) => m.SectionPage),
+        data: { view: 'list' },
+        loadComponent: () =>
+          import('./pages/driver-assignments/driver-assignments.page').then((m) => m.DriverAssignmentsPage),
+      },
+      {
+        path: 'driver-assignments/:id',
+        canActivate: [driverAssignmentGuard],
+        data: { view: 'detail' },
+        loadComponent: () =>
+          import('./pages/driver-assignments/driver-assignments.page').then((m) => m.DriverAssignmentsPage),
       },
       {
         path: 'profile',

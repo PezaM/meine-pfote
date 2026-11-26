@@ -31,9 +31,11 @@ import {
 } from 'ionicons/icons';
 
 import type { Animal } from '../models/animal';
+import type { DriverAssignment, DriverAssignmentStatus } from '../models/driver-assignment';
 import { USER_ROLE_LABELS, type UserRole } from '../models/user';
 import { AnimalService } from '../services/animal.service';
 import { AuthService } from '../services/auth.service';
+import { DriverAssignmentService } from '../services/driver-assignment.service';
 import { RoleService } from '../services/role.service';
 
 interface CostMock {
@@ -43,71 +45,12 @@ interface CostMock {
   date: string;
 }
 
-interface DriverAssignmentMock {
-  id: string;
-  driverId: string;
-  animalId: string;
-  pickup: string;
-  destination: string;
-  pickupTime: string;
-  animal: string;
-  notes: string;
-  status: 'Offen' | 'Läuft' | 'Erledigt';
-}
-
 const RECENT_COSTS: readonly CostMock[] = [
   { description: 'Kontrolluntersuchung Luna', category: 'Tierarzt', amount: 86.5, date: 'Heute' },
   { description: 'Medikamente für Milo', category: 'Medikamente', amount: 42.9, date: 'Gestern' },
   { description: 'Monatsvorrat Hundefutter', category: 'Futter', amount: 128.0, date: '20. Nov.' },
   { description: 'Fahrt zur Tierklinik', category: 'Fahrtkosten', amount: 34.2, date: '18. Nov.' },
   { description: 'Leinen und Näpfe', category: 'Sonstiges', amount: 56.75, date: '16. Nov.' },
-];
-
-const DRIVER_ASSIGNMENTS: readonly DriverAssignmentMock[] = [
-  {
-    id: 'trip-1',
-    driverId: 'user-driver',
-    animalId: 'animal-milo',
-    pickup: 'Pflegestelle Sonnenhof, München',
-    destination: 'Tierklinik Isar, München',
-    pickupTime: 'Heute, 14:30',
-    animal: 'Milo · Katze',
-    notes: 'Transportbox mitbringen; ruhig und warm halten.',
-    status: 'Offen',
-  },
-  {
-    id: 'trip-2',
-    driverId: 'user-driver',
-    animalId: 'animal-milo',
-    pickup: 'Tierklinik Isar, München',
-    destination: 'Pflegestelle Sonnenhof, München',
-    pickupTime: 'Heute, 16:00',
-    animal: 'Milo · Katze',
-    notes: 'Nach der Untersuchung direkt zurückfahren.',
-    status: 'Offen',
-  },
-  {
-    id: 'trip-3',
-    driverId: 'user-driver',
-    animalId: 'animal-luna',
-    pickup: 'Vereinsheim, München',
-    destination: 'Tierklinik Isar, München',
-    pickupTime: 'Heute, 13:15',
-    animal: 'Luna · Mischling',
-    notes: 'Sicherheitsgeschirr verwenden; Wasser für die Rückfahrt mitnehmen.',
-    status: 'Läuft',
-  },
-  {
-    id: 'trip-4',
-    driverId: 'user-driver',
-    animalId: 'animal-peppa',
-    pickup: 'Tierarztpraxis West',
-    destination: 'Vereinsheim',
-    pickupTime: 'Gestern, 11:15',
-    animal: 'Peppa · Kaninchen',
-    notes: 'Transportbox wurde zurückgegeben.',
-    status: 'Erledigt',
-  },
 ];
 
 const CURRENCY = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
@@ -136,6 +79,7 @@ const CURRENCY = new Intl.NumberFormat('de-DE', { style: 'currency', currency: '
 export class DashboardPage {
   private readonly authService = inject(AuthService);
   private readonly animalService = inject(AnimalService);
+  private readonly driverAssignmentService = inject(DriverAssignmentService);
   private readonly roleService = inject(RoleService);
 
   readonly currentUser = this.authService.getCurrentUser();
@@ -204,27 +148,44 @@ export class DashboardPage {
   ] as const;
   readonly treasurerRecentCosts = RECENT_COSTS;
 
-  readonly driverAssignments = DRIVER_ASSIGNMENTS.filter((assignment) => assignment.driverId === this.currentUser?.id);
-  readonly upcomingDriverAssignments = this.driverAssignments.filter((assignment) => assignment.status !== 'Erledigt');
-  readonly todayAssignments = this.driverAssignments.filter((assignment) => assignment.pickupTime.startsWith('Heute'));
-  readonly driverMetrics = [
-    { label: 'Heutige Fahrten', value: String(this.todayAssignments.length), color: 'green' },
-    {
-      label: 'Offene Fahrten',
-      value: String(this.driverAssignments.filter((trip) => trip.status === 'Offen').length),
-      color: 'amber',
-    },
-    {
-      label: 'Laufende Fahrten',
-      value: String(this.driverAssignments.filter((trip) => trip.status === 'Läuft').length),
-      color: 'blue',
-    },
-    {
-      label: 'Erledigte Fahrten',
-      value: String(this.driverAssignments.filter((trip) => trip.status === 'Erledigt').length),
-      color: 'violet',
-    },
-  ] as const;
+  get driverAssignments(): readonly DriverAssignment[] {
+    return this.driverAssignmentService.getAssignmentsForCurrentUser();
+  }
+
+  get upcomingDriverAssignments(): readonly DriverAssignment[] {
+    return this.driverAssignments.filter((assignment) => assignment.status !== 'Erledigt');
+  }
+
+  get todayAssignments(): readonly DriverAssignment[] {
+    const now = new Date();
+    const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+    return this.driverAssignments.filter((assignment) => assignment.date === localDate);
+  }
+
+  get driverMetrics(): readonly {
+    label: string;
+    value: string;
+    color: 'green' | 'amber' | 'blue' | 'violet';
+  }[] {
+    return [
+      { label: 'Heutige Fahrten', value: String(this.todayAssignments.length), color: 'green' },
+      {
+        label: 'Offene Fahrten',
+        value: String(this.driverAssignments.filter((trip) => trip.status === 'Offen').length),
+        color: 'amber',
+      },
+      {
+        label: 'Laufende Fahrten',
+        value: String(this.driverAssignments.filter((trip) => trip.status === 'In Bearbeitung').length),
+        color: 'blue',
+      },
+      {
+        label: 'Erledigte Fahrten',
+        value: String(this.driverAssignments.filter((trip) => trip.status === 'Erledigt').length),
+        color: 'violet',
+      },
+    ] as const;
+  }
 
   constructor() {
     addIcons({
@@ -247,6 +208,18 @@ export class DashboardPage {
     return CURRENCY.format(amount);
   }
 
+  formatAssignmentDate(assignment: DriverAssignment): string {
+    const now = new Date();
+    const today = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+    const label =
+      assignment.date === today
+        ? 'Heute'
+        : new Intl.DateTimeFormat('de-DE', { weekday: 'long', timeZone: 'UTC' }).format(
+            new Date(`${assignment.date}T00:00:00.000Z`),
+          );
+    return `${label}, ${assignment.time}`;
+  }
+
   animalStatusColor(status: string): 'success' | 'warning' | 'medium' {
     if (status === 'Bereit zur Vermittlung') {
       return 'success';
@@ -255,12 +228,12 @@ export class DashboardPage {
     return status === 'Nachkontrolle geplant' ? 'warning' : 'medium';
   }
 
-  get driverStatusColor(): (status: DriverAssignmentMock['status']) => 'warning' | 'primary' | 'success' {
+  get driverStatusColor(): (status: DriverAssignmentStatus) => 'warning' | 'primary' | 'success' {
     return (status) => {
       switch (status) {
         case 'Offen':
           return 'warning';
-        case 'Läuft':
+        case 'In Bearbeitung':
           return 'primary';
         case 'Erledigt':
           return 'success';

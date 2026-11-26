@@ -11,6 +11,10 @@
         <ion-icon slot="start" name="paw-outline"></ion-icon>
         Tiere ansehen
       </ion-button>
+      <ion-button routerLink="/home/driver-assignments">
+        <ion-icon slot="start" name="car-outline"></ion-icon>
+        Fahrten verwalten
+      </ion-button>
     </section>
 
     <section class="metric-grid" aria-label="Vereinskennzahlen">
@@ -304,13 +308,13 @@
       @if (driverAssignments.length) {
       <ion-list lines="full">
         @for (assignment of upcomingDriverAssignments; track assignment.id) {
-        <ion-item class="driver-assignment" [routerLink]="['/home/animal-details', assignment.animalId]">
+        <ion-item class="driver-assignment" [routerLink]="['/home/driver-assignments', assignment.id]">
           <ion-label class="ion-text-wrap">
-            <h2>{{ assignment.animal }}</h2>
-            <p class="trip-time"><ion-icon name="time-outline"></ion-icon> {{ assignment.pickupTime }}</p>
-            <p><ion-icon name="location-outline"></ion-icon> Abholung: {{ assignment.pickup }}</p>
+            <h2>{{ assignment.assignmentNumber }} · {{ assignment.animalName }} · {{ assignment.animalSpecies }}</h2>
+            <p class="trip-time"><ion-icon name="time-outline"></ion-icon> {{ formatAssignmentDate(assignment) }}</p>
+            <p><ion-icon name="location-outline"></ion-icon> Abholung: {{ assignment.pickupLocation }}</p>
             <p><ion-icon name="location-outline"></ion-icon> Ziel: {{ assignment.destination }}</p>
-            <p class="transport-note"><ion-icon name="warning-outline"></ion-icon> {{ assignment.notes }}</p>
+            <p class="transport-note"><ion-icon name="warning-outline"></ion-icon> {{ assignment.transportNotes }}</p>
           </ion-label>
           <ion-badge slot="end" [color]="driverStatusColor(assignment.status)">{{ assignment.status }}</ion-badge>
         </ion-item>

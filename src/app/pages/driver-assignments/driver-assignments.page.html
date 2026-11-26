@@ -1,0 +1,117 @@
+<ion-content class="assignments-content">
+  <main class="assignments-page">
+    @if (isDetail) {
+    <ion-button class="back-button" fill="clear" routerLink="/home/driver-assignments">
+      <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+      Zurück zu den Einsätzen
+    </ion-button>
+
+    @if (assignment; as currentAssignment) {
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · FAHRDIENST</p>
+        <h1>{{ currentAssignment.assignmentNumber }}</h1>
+      </div>
+      <ion-badge [color]="statusColor(currentAssignment.status)">{{ currentAssignment.status }}</ion-badge>
+    </header>
+
+    <ion-card class="assignment-card assignment-detail">
+      <ion-card-header>
+        <ion-card-title>{{ currentAssignment.animalName }} · {{ currentAssignment.animalSpecies }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="info-row">
+          <ion-icon name="time-outline"></ion-icon>
+          <span
+            ><strong>Datum und Uhrzeit</strong>{{ formatDate(currentAssignment.date) }} · {{ currentAssignment.time
+            }}</span
+          >
+        </p>
+        <p class="info-row">
+          <ion-icon name="location-outline"></ion-icon>
+          <span><strong>Abholort</strong>{{ currentAssignment.pickupLocation }}</span>
+        </p>
+        <p class="info-row">
+          <ion-icon name="location-outline"></ion-icon>
+          <span><strong>Zielort</strong>{{ currentAssignment.destination }}</span>
+        </p>
+        <div class="transport-notes">
+          <strong>Transporthinweise</strong>
+          <p>{{ currentAssignment.transportNotes }}</p>
+        </div>
+
+        @if (currentAssignment.status === 'Offen') {
+        <ion-button class="action-button" expand="block" size="large" (click)="startAssignment(currentAssignment)">
+          <ion-icon slot="start" name="play-outline"></ion-icon>
+          Einsatz beginnen
+        </ion-button>
+        } @else if (currentAssignment.status === 'In Bearbeitung') {
+        <ion-button class="action-button" expand="block" size="large" (click)="completeAssignment(currentAssignment)">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Als erledigt markieren
+        </ion-button>
+        }
+      </ion-card-content>
+    </ion-card>
+    } @else {
+    <ion-card><ion-card-content>Dieser Einsatz ist nicht verfügbar.</ion-card-content></ion-card>
+    } } @else {
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">MEINE PFOTE · FAHRDIENST</p>
+        <h1>{{ role === 'board' ? 'Fahrtenverwaltung' : 'Meine Einsätze' }}</h1>
+        <p class="page-intro">
+          {{ role === 'board' ? 'Übersicht und Statusverwaltung aller Fahrten.' : 'Deine zugewiesenen Fahrten auf einen
+          Blick.' }}
+        </p>
+      </div>
+    </header>
+
+    @if (assignments.length) {
+    <section class="assignment-list" aria-label="Fahrten">
+      @for (currentAssignment of assignments; track currentAssignment.id) {
+      <ion-card class="assignment-card">
+        <ion-card-header>
+          <div class="card-heading">
+            <div>
+              <p class="assignment-number">{{ currentAssignment.assignmentNumber }}</p>
+              <ion-card-title
+                >{{ currentAssignment.animalName }} · {{ currentAssignment.animalSpecies }}</ion-card-title
+              >
+            </div>
+            <ion-badge [color]="statusColor(currentAssignment.status)">{{ currentAssignment.status }}</ion-badge>
+          </div>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="info-row">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ formatDate(currentAssignment.date) }} · {{ currentAssignment.time }}</span>
+          </p>
+          <p class="info-row">
+            <ion-icon name="location-outline"></ion-icon>
+            <span><strong>Abholung:</strong> {{ currentAssignment.pickupLocation }}</span>
+          </p>
+          <p class="info-row">
+            <ion-icon name="location-outline"></ion-icon>
+            <span><strong>Ziel:</strong> {{ currentAssignment.destination }}</span>
+          </p>
+          <p class="transport-notes">{{ currentAssignment.transportNotes }}</p>
+          <ion-button
+            class="action-button"
+            expand="block"
+            size="large"
+            [routerLink]="['/home/driver-assignments', currentAssignment.id]"
+          >
+            Einsatz öffnen
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+      }
+    </section>
+    } @else {
+    <ion-card><ion-card-content>Aktuell sind keine Einsätze zugewiesen.</ion-card-content></ion-card>
+    } } @if (statusMessage) {
+    <ion-note class="status-message" role="status">{{ statusMessage }}</ion-note>
+    }
+  </main>
+</ion-content>
